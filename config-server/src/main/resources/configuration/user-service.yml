@@ -1,0 +1,20 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: user-service
+
+  # Database configuration
+
+  data:
+    mongodb:
+      uri: mongodb://skillMates:skillMates_password@localhost:27019/admin
+      database: skillMates
+
+# Eureka client configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true

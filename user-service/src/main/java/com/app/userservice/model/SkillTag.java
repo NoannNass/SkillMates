@@ -1,5 +1,7 @@
 package com.app.userservice.model;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -45,6 +47,16 @@ public class SkillTag {
                 '}';
     }
 
+
+    public SkillTag() {
+    }
+
+    public SkillTag(String id, String name, String category, boolean isPredefined) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.isPredefined = isPredefined;
+    }
 
     public String getId() {
         return id;

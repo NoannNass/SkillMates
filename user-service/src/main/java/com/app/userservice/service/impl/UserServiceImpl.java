@@ -53,11 +53,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(userProfile);
     }
     
+
+
     @Override
-    public User updateUserPersonalInfo(String userId, String username, String bio) {
+    public User updatePersonalInfo(String userId, String username, String bio, String profilePictureUrl) {
         User user = getUserById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé avec l'ID: " + userId));
-        
+
         if (username != null && !username.isEmpty()) {
             // Vérifier si le nom d'utilisateur est déjà pris
             if (!user.getUsername().equals(username) && userRepository.existsByUsername(username)) {
@@ -65,7 +67,7 @@ public class UserServiceImpl implements UserService {
             }
             user.setUsername(username);
         }
-        
+
         if (bio != null) {
             // Limiter la bio à 150 caractères
             if (bio.length() > 150) {
@@ -73,14 +75,14 @@ public class UserServiceImpl implements UserService {
             }
             user.setBio(bio);
         }
-        
 
-        
+
+
         // Mettre à jour le statut de complétion
         if (user.getCompletionStatus() == ProfileCompletionStatus.INITIAL) {
             user.setCompletionStatus(ProfileCompletionStatus.PERSONAL_INFO_COMPLETED);
         }
-        
+
         user.setUpdatedAt(new Date());
         return userRepository.save(user);
     }
@@ -392,4 +394,6 @@ public class UserServiceImpl implements UserService {
     public List<User> findUsersByInterest(String interestName) {
         return userRepository.findByInterestsName(interestName);
     }
+
+
 } 

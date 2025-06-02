@@ -1,5 +1,8 @@
 package com.app.userservice.service;
 
+import com.app.userservice.model.InterestTag;
+import com.app.userservice.model.LearningObjective;
+import com.app.userservice.model.ProfileCompletionStatus;
 import com.app.userservice.model.User;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,20 @@ public interface UserService {
 
     Optional<User> getUserByUsername(String username);
 
+    User updateUser(String id, User user);
 
-    User updateUserPersonalInfo(String userId, String username, String bio);
+    void deleteUser(String id);
+
+    List<User> findUsersBySkill(String skillName);
+
+    List<User> findUsersByInterest(String interestName);
+
+    User updatePersonalInfo(String userId, String username, String bio, String profilePictureUrl);
+
+    User updateInterests(String userId, List<InterestTag> interests);
+
+    User updateLearningObjectives(String userId, List<LearningObjective> objectives);
+
+    ProfileCompletionStatus getProfileCompletionStatus(String userId);
+
 }

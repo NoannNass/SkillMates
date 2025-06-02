@@ -46,6 +46,16 @@ public class InterestTag {
     }
 
 
+    public InterestTag() {
+    }
+
+    public InterestTag(String id, String name, String category, boolean isPredefined) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.isPredefined = isPredefined;
+    }
+
     public String getId() {
         return id;
     }
