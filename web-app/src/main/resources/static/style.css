@@ -251,4 +251,117 @@ body {
 }
 .cta-btn:hover {
     background: #e56c00;
+}
+
+/* --- Formulaire moderne centré --- */
+.form-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+}
+
+.form-card {
+    background: #fff;
+    color: #1a237e;
+    border-radius: 22px;
+    box-shadow: 0 8px 40px rgba(15, 76, 253, 0.10);
+    padding: 56px 44px 44px 44px;
+    max-width: 440px;
+    width: 100%;
+    margin: 48px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.form-card h1 {
+    font-size: 2.3rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #1a237e;
+    text-align: center;
+}
+.form-card .subtitle {
+    color: #4a4a4a;
+    font-size: 1.13rem;
+    margin-bottom: 32px;
+    text-align: center;
+}
+.form-card label {
+    font-weight: 500;
+    margin-bottom: 6px;
+    margin-top: 18px;
+    font-size: 1.08rem;
+}
+.form-card input[type="text"],
+.form-card input[type="email"],
+.form-card input[type="password"] {
+    border: 1.5px solid #dbeafe;
+    border-radius: 10px;
+    padding: 16px 16px;
+    font-size: 1.13rem;
+    margin-bottom: 2px;
+    background: #f8fafc;
+    color: #1a237e;
+    outline: none;
+    transition: border 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+}
+.form-card input:focus {
+    border: 1.5px solid #0f4cfd;
+}
+.form-card button[type="submit"] {
+    background: #ff8200;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 18px 0;
+    font-size: 1.18rem;
+    font-weight: bold;
+    margin-top: 28px;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 2px 8px rgba(255,130,0,0.10);
+    width: 100%;
+}
+.form-card button[type="submit"]:hover {
+    background: #e56c00;
+}
+.form-card .form-footer {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 1.08rem;
+}
+.form-card .form-footer a {
+    color: #0f4cfd;
+    text-decoration: underline;
+    font-weight: 500;
+}
+.form-card .error-message {
+    color: #e53935;
+    background: #ffeaea;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 1.05rem;
+}
+.form-card .success-message {
+    color: #388e3c;
+    background: #eaffea;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 1.05rem;
+}
+.form-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
 } 
