@@ -1,0 +1,21 @@
+server:
+  port: 8083
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: web-app
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+    web:
+      resources:
+        static-locations: classpath:/static/
+        cache:
+          period: 0
+    mvc:
+      static-path-pattern: /**

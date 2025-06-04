@@ -33,6 +33,8 @@ public class User {
 
     private ProfileCompletionStatus completionStatus = ProfileCompletionStatus.INITIAL;
 
+    private String password;
+    private String role;
 
     @DBRef
     private List<SkillTag> skills = new ArrayList<>();
@@ -133,5 +135,21 @@ public class User {
 
     public void setPartnershipIds(List<String> partnershipIds) {
         this.partnershipIds = partnershipIds;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

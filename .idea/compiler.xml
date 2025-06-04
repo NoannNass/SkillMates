@@ -17,6 +17,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="config-server" />
+        <module name="web-app" />
         <module name="discovery-service" />
       </profile>
     </annotationProcessing>
@@ -26,6 +27,7 @@
       <module name="config-server" options="-parameters" />
       <module name="discovery-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
+      <module name="web-app" options="-parameters" />
     </option>
   </component>
 </project>

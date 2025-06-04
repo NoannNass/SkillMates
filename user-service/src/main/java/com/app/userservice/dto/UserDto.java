@@ -26,6 +26,8 @@ public class UserDto {
     private List<String> parternshipIds;
     private Date createdAt;
     private Date updatedAt;
+    private String password;
+    private String role;
 
     /**
      * Convertit un objet du modèle UserProfile en UserProfileDTO.
@@ -42,6 +44,8 @@ public class UserDto {
         dto.setCreatedAt(model.getCreateAt());
         dto.setUpdatedAt(model.getUpdatedAt());
         dto.setParternshipIds(model.getPartnershipIds());
+        dto.setPassword(model.getPassword());
+        dto.setRole(model.getRole());
 
         // Conversion des compétences si présentes
         if (model.getSkills() != null) {
@@ -81,6 +85,8 @@ public class UserDto {
         model.setCreateAt(this.createdAt);
         model.setUpdatedAt(this.updatedAt);
         model.setPartnershipIds(this.parternshipIds);
+        model.setPassword(this.password);
+        model.setRole(this.role);
 
         // Conversion des compétences si présentes
         if (this.skillTags != null) {
