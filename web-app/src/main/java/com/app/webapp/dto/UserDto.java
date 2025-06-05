@@ -18,9 +18,10 @@ public class UserDto {
     private String role;
 
 
-    public UserDto(String username) {
-        this.username = username;
+    public UserDto() {
+        // Constructeur par défaut requis par Spring
     }
+
 
     public UserDto(String username, String email, String bio, List<SkillTagDTO> skillTags, List<LearningObjectiveDTO> learningObjectives, List<InterestTagDTO> interestTags, List<String> parternshipIds, Date createdAt, Date updatedAt, String password, String role) {
         this.username = username;

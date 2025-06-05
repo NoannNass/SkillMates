@@ -19,20 +19,26 @@ public class RegisterController {
 
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
-        model.addAttribute("user", new UserDto(""));
+        model.addAttribute("user", new UserDto());
         return "register";
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("user") UserDto userDto, Model model) {
+public String registerUser(@ModelAttribute("user") UserDto userDto, Model model) {
+    System.out.println("Tentative d'inscription : " + userDto.getUsername() + " / " + userDto.getEmail());
+    try {
         ApiResponse<UserDto> response = userClient.createUser(userDto);
+        System.out.println("Réponse du user-service : " + response);
         if (response != null && response.getData() != null) {
-            // Succès : redirige vers la page de connexion
             return "redirect:/login?success";
         } else {
-            // Échec : affiche un message d'erreur
             model.addAttribute("error", "Erreur lors de l'inscription. Veuillez réessayer.");
             return "register";
         }
+    } catch (Exception e) {
+        e.printStackTrace();
+        model.addAttribute("error", "Erreur technique : " + e.getMessage());
+        return "register";
     }
-} 
+}
+}
