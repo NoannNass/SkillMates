@@ -17,18 +17,25 @@ import com.app.webapp.dto.UserDto;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private UserClient userClient;
+    private final UserClient userClient;
 
+    @Autowired
+    public CustomUserDetailsService(UserClient userClient) {
+        this.userClient = userClient;
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         try {
-            // Recherche de l'utilisateur via le client Feign
-            ApiResponse<UserDto> response = userClient.getUserByUsername(username);
+            System.out.println("Tentative de login pour l'email : " + email);
+            // Recherche de l'utilisateur via le client Feign par email
+            ApiResponse<UserDto> response = userClient.getUserByEmail(email);
             if (response == null || response.getData() == null) {
-                throw new UsernameNotFoundException("Utilisateur non trouvé: " + username);
+                System.out.println("Aucun utilisateur trouvé pour l'email : " + email);
+                throw new UsernameNotFoundException("Utilisateur non trouvé avec l'email: " + email);
             }
             UserDto userDTO = response.getData();
+            System.out.println("Utilisateur trouvé : " + userDTO.getEmail() + " / password hash : " + userDTO.getPassword());
             // Conversion du rôle au format Spring Security (ROLE_XXX)
             String role = userDTO.getRole() != null ? "ROLE_" + userDTO.getRole().toUpperCase() : "ROLE_USER";
             // Retourne l'objet UserDetails de Spring Security
@@ -38,6 +45,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     Collections.singletonList(new SimpleGrantedAuthority(role))
             );
         } catch (Exception e) {
+            System.out.println("Erreur lors de la recherche de l'utilisateur : " + e.getMessage());
             throw new UsernameNotFoundException("Erreur lors de la recherche de l'utilisateur: " + e.getMessage());
         }
     }

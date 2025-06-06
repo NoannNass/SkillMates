@@ -7,6 +7,7 @@ import com.app.userservice.service.LearningObjectiveService;
 import com.app.userservice.service.SkillService;
 import com.app.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,13 +22,15 @@ public class UserServiceImpl implements UserService {
     private final SkillService skillService;
     private final InterestService interestService;
     private final LearningObjectiveService learningObjectiveService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, SkillService skillService, InterestService interestService, LearningObjectiveService learningObjectiveService) {
+    public UserServiceImpl(UserRepository userRepository, SkillService skillService, InterestService interestService, LearningObjectiveService learningObjectiveService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.skillService = skillService;
         this.interestService = interestService;
         this.learningObjectiveService = learningObjectiveService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -41,6 +44,9 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByUsername(userProfile.getUsername())) {
             throw new IllegalArgumentException("Ce nom d'utilisateur est déjà pris");
         }
+        
+        // Encoder le mot de passe
+        userProfile.setPassword(passwordEncoder.encode(userProfile.getPassword()));
         
         // Initialiser les dates
         Date now = new Date();
