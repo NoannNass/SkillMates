@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Créez votre profil - Objectifs d'apprentissage</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="progress-bar">
+        <div class="progress" style="width: 75%"></div>
+    </div>
+    <div class="container">
+        <h2>Créez votre profil</h2>
+        <p style="text-align:center; margin-bottom: 24px;">Personnalisez votre profil pour trouver les meilleurs
+            partenaires d'apprentissage</p>
+        <form th:action="@{/profile-completion/step3}" method="post">
+            <div class="form-step">
+                <h3>Objectifs d'apprentissage</h3>
+                <p style="margin-bottom: 18px;">Définissez vos objectifs pour trouver des partenaires avec des ambitions
+                    similaires</p>
+                <div class="form-group" style="display:flex; gap:8px;">
+                    <input type="text" name="objective1" placeholder="Objectif d'apprentissage 1" style="flex:1;" />
+                    <button type="button" class="btn btn-secondary">+ Ajouter un objectif</button>
+                </div>
+                <div class="tips">
+                    <h4 style="margin:0 0 8px 0;">Conseils pour définir de bons objectifs</h4>
+                    <ul style="margin:0; padding-left:18px;">
+                        <li>Soyez spécifique (ex: "Apprendre React" plutôt que "Apprendre le développement web")</li>
+                        <li>Définissez des objectifs mesurables</li>
+                        <li>Fixez-vous des délais réalistes</li>
+                    </ul>
+                </div>
+                <div class="form-navigation">
+                    <a href="/profile-completion/step2" class="btn btn-secondary">&larr; Précédent</a>
+                    <button type="submit" class="btn btn-primary">Finaliser mon profil &rarr;</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
