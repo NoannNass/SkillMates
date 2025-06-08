@@ -95,7 +95,11 @@ public class ProfileCompletionController {
     }
 
     @PostMapping("/step2")
-    public String submitSkills(@ModelAttribute("selectedSkills") List<String> selectedSkills, Model model) {
+    public String submitSkills(@RequestParam(value = "selectedSkills", required = false) List<String> selectedSkills, Model model) {
+        if (selectedSkills == null) {
+            selectedSkills = new ArrayList<>();
+        }
+        
         model.addAttribute("selectedSkills", selectedSkills);
         
         // Vérifier si les informations utilisateur sont disponibles
@@ -107,7 +111,8 @@ public class ProfileCompletionController {
             // On suppose que les noms des tags sont suffisants pour lier côté user-service
             List<SkillTagDTO> skillDTOs = new ArrayList<>();
             for (String name : selectedSkills) {
-                skillDTOs.add(new SkillTagDTO(null, name, null));
+                SkillTagDTO skill = new SkillTagDTO(null, name, "GENERAL");
+                skillDTOs.add(skill);
             }
             try {
                 logger.info("Tentative de mise à jour des compétences: {}", skillDTOs);
@@ -144,7 +149,11 @@ public class ProfileCompletionController {
     }
 
     @PostMapping("/step3")
-    public String submitInterests(@ModelAttribute("selectedInterests") List<String> selectedInterests, Model model) {
+    public String submitInterests(@RequestParam(value = "selectedInterests", required = false) List<String> selectedInterests, Model model) {
+        if (selectedInterests == null) {
+            selectedInterests = new ArrayList<>();
+        }
+        
         model.addAttribute("selectedInterests", selectedInterests);
         
         // Vérifier si les informations utilisateur sont disponibles
@@ -156,7 +165,8 @@ public class ProfileCompletionController {
             // On suppose que les noms des tags sont suffisants pour lier côté user-service
             List<InterestTagDTO> interestDTOs = new ArrayList<>();
             for (String name : selectedInterests) {
-                interestDTOs.add(new InterestTagDTO(null, name, null));
+                InterestTagDTO interest = new InterestTagDTO(null, name, "GENERAL");
+                interestDTOs.add(interest);
             }
             try {
                 logger.info("Tentative de mise à jour des intérêts: {}", interestDTOs);
@@ -185,17 +195,17 @@ public class ProfileCompletionController {
         String userId = userInfoSession.getUserId();
         logger.info("Soumission des objectifs d'apprentissage pour l'utilisateur: userId={}", userId);
         
-        if (learningObjectivesTitles != null) {
-            logger.info("Objectifs d'apprentissage sélectionnés: {}", learningObjectivesTitles);
-        } else {
+        if (learningObjectivesTitles == null) {
+            learningObjectivesTitles = new ArrayList<>();
             logger.warn("Aucun objectif d'apprentissage sélectionné");
+        } else {
+            logger.info("Objectifs d'apprentissage sélectionnés: {}", learningObjectivesTitles);
         }
         
         List<LearningObjectiveDTO> learningObjectives = new ArrayList<>();
-        if (learningObjectivesTitles != null) {
-            for (String title : learningObjectivesTitles) {
-                learningObjectives.add(new LearningObjectiveDTO(null, title, null, 0));
-            }
+        for (String title : learningObjectivesTitles) {
+            LearningObjectiveDTO objective = new LearningObjectiveDTO(null, title, userId, 0);
+            learningObjectives.add(objective);
         }
         
         if (userId != null) {
