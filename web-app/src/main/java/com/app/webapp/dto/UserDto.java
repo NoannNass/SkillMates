@@ -5,6 +5,7 @@ import java.util.List;
 
 
 public class UserDto {
+    private String id;
     private String username;
     private String email;
     private String bio;
@@ -23,7 +24,8 @@ public class UserDto {
     }
 
 
-    public UserDto(String username, String email, String bio, List<SkillTagDTO> skillTags, List<LearningObjectiveDTO> learningObjectives, List<InterestTagDTO> interestTags, List<String> parternshipIds, Date createdAt, Date updatedAt, String password, String role) {
+    public UserDto(String id, String username, String email, String bio, List<SkillTagDTO> skillTags, List<LearningObjectiveDTO> learningObjectives, List<InterestTagDTO> interestTags, List<String> parternshipIds, Date createdAt, Date updatedAt, String password, String role) {
+        this.id = id;
         this.username = username;
         this.email = email;
         this.bio = bio;
@@ -35,6 +37,14 @@ public class UserDto {
         this.updatedAt = updatedAt;
         this.password = password;
         this.role = role;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUsername() {

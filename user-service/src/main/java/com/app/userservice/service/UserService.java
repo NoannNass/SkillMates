@@ -3,6 +3,7 @@ package com.app.userservice.service;
 import com.app.userservice.model.InterestTag;
 import com.app.userservice.model.LearningObjective;
 import com.app.userservice.model.ProfileCompletionStatus;
+import com.app.userservice.model.SkillTag;
 import com.app.userservice.model.User;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,8 @@ public interface UserService {
     List<User> findUsersByInterest(String interestName);
 
     User updatePersonalInfo(String userId, String username, String bio, String profilePictureUrl);
+
+    User updateSkills(String userId, List<SkillTag> skills);
 
     User updateInterests(String userId, List<InterestTag> interests);
 

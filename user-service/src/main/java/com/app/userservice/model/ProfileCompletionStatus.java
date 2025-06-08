@@ -7,6 +7,7 @@ package com.app.userservice.model;
 public enum ProfileCompletionStatus {
     INITIAL,                 // Inscription initiale
     PERSONAL_INFO_COMPLETED, // Informations personnelles complétées
+    SKILLS_COMPLETED,         // Compétences complétées
     INTERESTS_COMPLETED,     // Centres d'intérêt complétés
     COMPLETED                // Profil entièrement complété
 }

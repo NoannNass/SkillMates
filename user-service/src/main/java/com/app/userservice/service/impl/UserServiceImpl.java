@@ -141,7 +141,7 @@ public class UserServiceImpl implements UserService {
         }
         
         // Mettre à jour le statut de complétion
-        if (user.getCompletionStatus() == ProfileCompletionStatus.PERSONAL_INFO_COMPLETED) {
+        if (user.getCompletionStatus() == ProfileCompletionStatus.SKILLS_COMPLETED) {
             user.setCompletionStatus(ProfileCompletionStatus.INTERESTS_COMPLETED);
         }
         
@@ -401,5 +401,61 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByInterestsName(interestName);
     }
 
+
+    @Override
+    public User updateSkills(String userId, List<SkillTag> skills) {
+        User user = getUserById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé avec l'ID: " + userId));
+        
+        // Traiter les compétences
+        if (skills != null && !skills.isEmpty()) {
+            List<SkillTag> processedSkills = new ArrayList<>();
+            
+            for (SkillTag skill : skills) {
+                if (skill.getId() == null) {
+                    // Vérifier si une compétence avec ce nom existe déjà
+                    Optional<SkillTag> existingSkill = skillService.getSkillByName(skill.getName());
+                    
+                    if (existingSkill.isPresent()) {
+                        // Utiliser la compétence existante
+                        processedSkills.add(existingSkill.get());
+                    } else {
+                        try {
+                            // Créer une nouvelle compétence
+                            SkillTag newSkill = new SkillTag();
+                            newSkill.setName(skill.getName());
+                            newSkill.setCategory(skill.getCategory());
+                            newSkill.setPredefined(false);
+                            
+                            SkillTag savedSkill = skillService.createSkill(newSkill);
+                            processedSkills.add(savedSkill);
+                        } catch (Exception e) {
+                            // En cas d'erreur, essayer de récupérer la compétence qui vient d'être créée
+                            Optional<SkillTag> justCreatedSkill = skillService.getSkillByName(skill.getName());
+                            if (justCreatedSkill.isPresent()) {
+                                processedSkills.add(justCreatedSkill.get());
+                            }
+                        }
+                    }
+                } else {
+                    // Vérifier que la compétence existe
+                    Optional<SkillTag> existingSkill = skillService.getSkillById(skill.getId());
+                    if (existingSkill.isPresent()) {
+                        processedSkills.add(existingSkill.get());
+                    }
+                }
+            }
+            
+            user.setSkills(processedSkills);
+        }
+        
+        // Mettre à jour le statut de complétion si nécessaire
+        if (user.getCompletionStatus() == ProfileCompletionStatus.PERSONAL_INFO_COMPLETED) {
+            user.setCompletionStatus(ProfileCompletionStatus.SKILLS_COMPLETED);
+        }
+        
+        user.setUpdatedAt(new Date());
+        return userRepository.save(user);
+    }
 
 } 

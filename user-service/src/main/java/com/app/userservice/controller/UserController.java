@@ -1,10 +1,7 @@
 package com.app.userservice.controller;
 
 import com.app.userservice.dto.*;
-import com.app.userservice.model.InterestTag;
-import com.app.userservice.model.LearningObjective;
-import com.app.userservice.model.ProfileCompletionStatus;
-import com.app.userservice.model.User;
+import com.app.userservice.model.*;
 import com.app.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -207,36 +204,61 @@ public class UserController {
     }
     
     /**
- * Met à jour les informations personnelles d'un utilisateur.
- * Étape 1 du processus d'inscription progressive.
- * 
- * @param userId Identifiant de l'utilisateur
- * @param personalInfoDTO DTO contenant les informations personnelles
- * @return Le DTO de l'utilisateur mis à jour
- */
-@PutMapping("/profile/personal-info")
-public ResponseEntity<ApiResponse<UserDto>> updatePersonalInfo(
-        @RequestParam String userId,
-        @RequestBody PersonalInfoDTO personalInfoDTO) {
-    try {
-        User updatedUser = userService.updatePersonalInfo(
-            userId,
-            personalInfoDTO.getUsername(), 
-            personalInfoDTO.getBio(), 
-            personalInfoDTO.getProfilePictureUrl()
-        );
-        UserDto updatedUserDTO = UserDto.fromModel(updatedUser);
-        return ResponseEntity.ok(ApiResponse.success(updatedUserDTO));
-    } catch (IllegalArgumentException e) {
-        return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+     * Met à jour les informations personnelles d'un utilisateur.
+     * Étape 1 du processus d'inscription progressive.
+     * 
+     * @param userId ID de l'utilisateur
+     * @param personalInfoDTO DTO contenant les informations personnelles
+     * @return Le DTO de l'utilisateur mis à jour
+     */
+    @PutMapping("/profile/personal-info")
+    public ResponseEntity<ApiResponse<UserDto>> updatePersonalInfo(
+            @RequestParam String userId,
+            @RequestBody PersonalInfoDTO personalInfoDTO) {
+        try {
+            User updatedUser = userService.updatePersonalInfo(
+                userId,
+                personalInfoDTO.getUsername(), 
+                personalInfoDTO.getBio(), 
+                personalInfoDTO.getProfilePictureUrl()
+            );
+            UserDto updatedUserDTO = UserDto.fromModel(updatedUser);
+            return ResponseEntity.ok(ApiResponse.success(updatedUserDTO));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
     }
-}
+    
+    /**
+     * Met à jour les compétences d'un utilisateur.
+     * Étape 2 du processus d'inscription progressive.
+     * 
+     * @param userId ID de l'utilisateur
+     * @param skillDTOs Liste des compétences
+     * @return Le DTO de l'utilisateur mis à jour
+     */
+    @PutMapping("/profile/skills")
+    public ResponseEntity<ApiResponse<UserDto>> updateSkills(
+            @RequestParam String userId,
+            @RequestBody List<SkillTagDTO> skillDTOs) {
+        try {
+            List<SkillTag> skills = skillDTOs.stream()
+                .map(SkillTagDTO::toModel)
+                .collect(Collectors.toList());
+                
+            User updatedUser = userService.updateSkills(userId, skills);
+            UserDto updatedUserDTO = UserDto.fromModel(updatedUser);
+            return ResponseEntity.ok(ApiResponse.success(updatedUserDTO));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
     
     /**
      * Met à jour les centres d'intérêt d'un utilisateur.
-     * Étape 2 du processus d'inscription progressive.
+     * Étape 3 du processus d'inscription progressive.
      * 
-     * @param userId Identifiant de l'utilisateur
+     * @param userId ID de l'utilisateur
      * @param interestDTOs Liste des centres d'intérêt
      * @return Le DTO de l'utilisateur mis à jour
      */
@@ -259,9 +281,9 @@ public ResponseEntity<ApiResponse<UserDto>> updatePersonalInfo(
     
     /**
      * Met à jour les objectifs d'apprentissage d'un utilisateur.
-     * Étape 3 du processus d'inscription progressive.
+     * Étape 4 du processus d'inscription progressive.
      * 
-     * @param userId Identifiant de l'utilisateur
+     * @param userId ID de l'utilisateur
      * @param objectiveDTOs Liste des objectifs d'apprentissage
      * @return Le DTO de l'utilisateur mis à jour
      */
@@ -285,7 +307,7 @@ public ResponseEntity<ApiResponse<UserDto>> updatePersonalInfo(
     /**
      * Récupère l'état d'avancement du profil d'un utilisateur.
      * 
-     * @param userId Identifiant de l'utilisateur
+     * @param userId ID de l'utilisateur
      * @return Le statut de complétion du profil
      */
     @GetMapping("/profile/completion")

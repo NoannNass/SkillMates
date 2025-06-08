@@ -16,6 +16,7 @@ import com.app.webapp.dto.InterestTagDTO;
 import com.app.webapp.dto.LearningObjectiveDTO;
 import com.app.webapp.dto.PersonalInfoDTO;
 import com.app.webapp.dto.ProfileCompletionStatus;
+import com.app.webapp.dto.SkillTagDTO;
 import com.app.webapp.dto.UserDto;
 
 @FeignClient(name = "user-service", path = "/api/users")
@@ -49,6 +50,9 @@ public interface UserClient {
 
     @PutMapping("/profile/personal-info")
     ApiResponse<UserDto> updatePersonalInfo(@RequestParam("userId") String userId, @RequestBody PersonalInfoDTO personalInfoDTO);
+
+    @PutMapping("/profile/skills")
+    ApiResponse<UserDto> updateSkills(@RequestParam("userId") String userId, @RequestBody List<SkillTagDTO> skillDTOs);
 
     @PutMapping("/profile/interests")
     ApiResponse<UserDto> updateInterests(@RequestParam("userId") String userId, @RequestBody List<InterestTagDTO> interestDTOs);

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Créez votre profil - Compétences</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="progress-bar">
+        <div class="progress" style="width: 40%"></div>
+    </div>
+    <div class="container">
+        <h2>Créez votre profil</h2>
+        <p style="text-align:center; margin-bottom: 24px;">Personnalisez votre profil pour trouver les meilleurs
+            partenaires d'apprentissage</p>
+        <form id="skillsForm" th:action="@{/profile-completion/step2}" method="post">
+            <div class="form-step">
+                <h3>Compétences</h3>
+                <p style="margin-bottom: 18px;">Ajoutez les compétences que vous maîtrisez pour permettre aux autres
+                    utilisateurs de vous trouver</p>
+                <div class="form-group" style="display:flex; gap:8px;">
+                    <input type="text" id="customSkillInput" placeholder="Ajouter une compétence" style="flex:1;" />
+                    <button type="button" class="btn btn-secondary" id="addSkillBtn">+</button>
+                </div>
+                <div class="suggestions" id="skillTagsContainer">
+                    <div th:each="tag : ${skillTags}" class="tag-suggestion">
+                        <input type="checkbox" th:value="${tag.name}" th:name="selectedSkills" th:id="${tag.name}" />
+                        <label th:for="${tag.name}" th:text="${tag.name}"></label>
+                    </div>
+                </div>
+                <div id="customSkillsContainer"></div>
+                <div class="form-navigation">
+                    <a href="/profile-completion/step1" class="btn btn-secondary">&larr; Précédent</a>
+                    <button type="submit" class="btn btn-primary">Suivant &rarr;</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        // Ajout dynamique de compétence personnalisée
+        const addBtn = document.getElementById('addSkillBtn');
+        const input = document.getElementById('customSkillInput');
+        const customContainer = document.getElementById('customSkillsContainer');
+        const form = document.getElementById('skillsForm');
+
+        function createTag(name) {
+            const div = document.createElement('div');
+            div.className = 'tag-suggestion';
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.name = 'selectedSkills';
+            input.value = name;
+            input.checked = true;
+            input.style.display = 'none';
+            const label = document.createElement('label');
+            label.textContent = name;
+            const removeBtn = document.createElement('span');
+            removeBtn.textContent = '✕';
+            removeBtn.style.marginLeft = '8px';
+            removeBtn.style.cursor = 'pointer';
+            removeBtn.onclick = () => div.remove();
+            div.appendChild(input);
+            div.appendChild(label);
+            div.appendChild(removeBtn);
+            return div;
+        }
+
+        addBtn.onclick = function (e) {
+            e.preventDefault();
+            const value = input.value.trim();
+            if (value.length > 0) {
+                customContainer.appendChild(createTag(value));
+                input.value = '';
+            }
+        };
+    </script>
+</body>
+
+</html>

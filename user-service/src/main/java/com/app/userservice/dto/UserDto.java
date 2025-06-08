@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserDto {
 
-
+    private String id;
     private String username;
     private String email;
     private String bio;
@@ -38,6 +38,7 @@ public class UserDto {
      */
     public static UserDto fromModel(com.app.userservice.model.User model) {
         UserDto dto = new UserDto();
+        dto.setId(model.getId());
         dto.setUsername(model.getUsername());
         dto.setEmail(model.getEmail());
         dto.setBio(model.getBio());
@@ -79,6 +80,7 @@ public class UserDto {
      */
     public com.app.userservice.model.User toModel() {
         com.app.userservice.model.User model = new com.app.userservice.model.User();
+        model.setId(this.id);
         model.setUsername(this.username);
         model.setEmail(this.email);
         model.setBio(this.bio);
@@ -113,8 +115,4 @@ public class UserDto {
 
         return model;
     }
-
-
-
-
 }
