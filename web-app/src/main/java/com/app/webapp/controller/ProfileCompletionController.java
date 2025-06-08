@@ -5,6 +5,10 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +27,10 @@ import com.app.webapp.dto.LearningObjectiveDTO;
 import com.app.webapp.dto.PersonalInfoDTO;
 import com.app.webapp.dto.SkillTagDTO;
 import com.app.webapp.dto.UserInfoSession;
+import com.app.webapp.security.CustomUserDetailsService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/profile-completion")
@@ -35,12 +43,14 @@ public class ProfileCompletionController {
     private final SkillTagClient skillTagClient;
     private final UserClient userClient;
     private final UserInfoSession userInfoSession;
+    private final CustomUserDetailsService userDetailsService;
 
-    public ProfileCompletionController(InterestTagClient interestTagClient, SkillTagClient skillTagClient, UserClient userClient, UserInfoSession userInfoSession) {
+    public ProfileCompletionController(InterestTagClient interestTagClient, SkillTagClient skillTagClient, UserClient userClient, UserInfoSession userInfoSession, CustomUserDetailsService userDetailsService) {
         this.interestTagClient = interestTagClient;
         this.skillTagClient = skillTagClient;
         this.userClient = userClient;
         this.userInfoSession = userInfoSession;
+        this.userDetailsService = userDetailsService;
     }
 
     @GetMapping("/step1")
@@ -190,10 +200,15 @@ public class ProfileCompletionController {
     }
 
     @PostMapping("/step4")
-    public String submitLearningObjectives(@RequestParam(value = "learningObjectives", required = false) List<String> learningObjectivesTitles, SessionStatus sessionStatus) {
+    public String submitLearningObjectives(@RequestParam(value = "learningObjectives", required = false) List<String> learningObjectivesTitles, 
+                                          SessionStatus sessionStatus,
+                                          HttpServletRequest request) {
         // Vérifier si les informations utilisateur sont disponibles
         String userId = userInfoSession.getUserId();
-        logger.info("Soumission des objectifs d'apprentissage pour l'utilisateur: userId={}", userId);
+        String userEmail = userInfoSession.getEmail();
+        
+        logger.info("Soumission des objectifs d'apprentissage pour l'utilisateur: userId={}, email={}", 
+                   userId, userEmail);
         
         if (learningObjectivesTitles == null) {
             learningObjectivesTitles = new ArrayList<>();
@@ -220,7 +235,34 @@ public class ProfileCompletionController {
             logger.warn("ID utilisateur non disponible en session, mise à jour impossible");
         }
         
+        // Vérifier si l'utilisateur est déjà authentifié
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            logger.info("Utilisateur non authentifié, tentative d'authentification avec email: {}", userEmail);
+            
+            // Tenter de réauthentifier l'utilisateur
+            if (userEmail != null) {
+                try {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+                    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                    
+                    // Force la création de la session si elle n'existe pas
+                    HttpSession session = request.getSession(true);
+                    logger.info("Authentification réussie, session ID: {}", session.getId());
+                } catch (Exception e) {
+                    logger.error("Erreur lors de la réauthentification", e);
+                }
+            }
+        } else {
+            logger.info("Utilisateur déjà authentifié: {}", authentication.getName());
+        }
+        
+        // Terminer la session des attributs mais pas la session HTTP
         sessionStatus.setComplete();
+        logger.info("Fin de la création de profil, redirection vers le dashboard");
+        
         return "redirect:/dashboard";
     }
 } 

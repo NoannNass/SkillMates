@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SkillMates - Mon Profil</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo"><span class="logo-circle">S</span>SkillMates</div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Tableau de bord</span>
+                </a>
+                <a href="/profil" class="active">
+                    <i class="fas fa-user"></i>
+                    <span>Mon profil</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Mes apprentissages</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-bullseye"></i>
+                    <span>Objectifs</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-calendar"></i>
+                    <span>Sessions</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-users"></i>
+                    <span>Partenaires</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#">
+                    <i class="fas fa-cog"></i>
+                    <span>Paramètres</span>
+                </a>
+                <a href="/logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="main-content">
+            <header class="dash-header">
+                <h1>Mon profil</h1>
+                <div class="user-menu">
+                    <span class="notifications">
+                        <i class="fas fa-bell"></i>
+                    </span>
+                    <div class="avatar"
+                        th:text="${fullName != null && !fullName.isEmpty() ? fullName.substring(0, 1).toUpperCase() : 'U'}">
+                        T</div>
+                </div>
+            </header>
+
+            <div class="profile-container">
+                <!-- Section photo de profil -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <h2>Photo de profil</h2>
+                        <button class="edit-btn"><i class="fas fa-edit"></i> Modifier</button>
+                    </div>
+                    <div class="profile-picture-container">
+                        <div class="profile-picture"
+                            th:text="${fullName != null && !fullName.isEmpty() ? fullName.substring(0, 1).toUpperCase() : 'U'}">
+                            T</div>
+                        <div class="upload-overlay">
+                            <i class="fas fa-camera"></i>
+                            <span>Changer</span>
+                        </div>
+                    </div>
+                    <div class="status-selector">
+                        <span class="status-label">Statut :</span>
+                        <select>
+                            <option value="available" selected>Disponible</option>
+                            <option value="busy">Occupé</option>
+                            <option value="away">Absent</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Section informations personnelles -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <h2>Informations personnelles</h2>
+                        <button class="edit-btn"><i class="fas fa-edit"></i> Modifier</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Nom complet</label>
+                        <input type="text" id="name" th:value="${fullName}">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" th:value="${email}">
+                    </div>
+                    <div class="form-group">
+                        <label for="bio">Biographie</label>
+                        <textarea id="bio" rows="4"
+                            th:text="${bio}">Développeur web passionné par l'UX/UI et l'accessibilité. Actuellement en apprentissage de React et TypeScript.</textarea>
+                    </div>
+                </div>
+
+                <!-- Section compétences -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <h2>Compétences</h2>
+                        <button class="edit-btn"><i class="fas fa-edit"></i> Modifier</button>
+                    </div>
+                    <div class="skills-container">
+                        <div th:each="skill : ${skills}" class="skill-item">
+                            <span th:text="${skill}">Compétence</span>
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                    </div>
+                    <div class="add-skill">
+                        <input type="text" placeholder="Ajouter une compétence...">
+                        <button><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+
+                <!-- Section objectifs -->
+                <div class="profile-section">
+                    <div class="section-header">
+                        <h2>Objectifs d'apprentissage</h2>
+                        <button class="edit-btn"><i class="fas fa-edit"></i> Modifier</button>
+                    </div>
+                    <div class="goals-list">
+                        <!-- Message si pas d'objectifs -->
+                        <div th:if="${learningObjectives.empty}" class="no-goals-message">
+                            <p>Vous n'avez pas encore défini d'objectifs d'apprentissage.</p>
+                        </div>
+
+                        <!-- Liste des objectifs -->
+                        <div th:each="objective : ${learningObjectives}" class="goal-item">
+                            <div class="goal-content">
+                                <h3 th:text="${objective.title}">Titre de l'objectif</h3>
+                                <div class="progress-bar">
+                                    <div class="progress" th:style="'width: ' + ${objective.progressPercentage} + '%;'">
+                                    </div>
+                                </div>
+                                <div class="goal-details">
+                                    <span><i class="fas fa-clock"></i> Échéance: à définir</span>
+                                    <span th:text="${objective.progressPercentage + '%'}">0%</span>
+                                </div>
+                            </div>
+                            <div class="goal-actions">
+                                <button><i class="fas fa-edit"></i></button>
+                                <button><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="add-goal-btn"><i class="fas fa-plus"></i> Ajouter un objectif</button>
+                </div>
+
+                <!-- Section boutons d'action -->
+                <div class="profile-actions">
+                    <button class="save-btn">Enregistrer les modifications</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

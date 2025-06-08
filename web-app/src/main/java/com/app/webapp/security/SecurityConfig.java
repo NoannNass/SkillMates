@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -22,24 +24,37 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home", "/register", "/login", "/static/**", "/actuator/**", "/css/**","/style.css", "/js/**", "/images/**", "/profile-completion/**").permitAll()
+                        .requestMatchers("/", "/home", "/register", "/login", "/static/**", "/actuator/**", "/css/**","/style.css", "/js/**", "/images/**").permitAll()
+                        // Permettre l'accès aux pages de création de profil sans authentification complète
+                        .requestMatchers("/profile-completion/**").permitAll()
                         .requestMatchers("/api/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/dashboard")
+                        .defaultSuccessUrl("/dashboard", true)
+                        .successHandler(authenticationSuccessHandler())
                         .permitAll()
-
                 )
                 .logout(logout ->logout
                         .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll())
                 .exceptionHandling(exceptions ->exceptions
                 .accessDeniedPage("/access-denied"));
 
         return http.build();
+    }
 
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
+        handler.setUseReferer(false);
+        handler.setDefaultTargetUrl("/dashboard");
+        handler.setAlwaysUseDefaultTargetUrl(true);
+        return handler;
     }
 
     @Bean
@@ -54,9 +69,4 @@ public class SecurityConfig {
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }
-
-
-
-
-
 }

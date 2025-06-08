@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SkillMates - Tableau de Bord</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo"><span class="logo-circle">S</span>SkillMates</div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard" class="active">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Tableau de bord</span>
+                </a>
+                <a href="/profil">
+                    <i class="fas fa-user"></i>
+                    <span>Mon profil</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Mes apprentissages</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-bullseye"></i>
+                    <span>Objectifs</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-calendar"></i>
+                    <span>Sessions</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-users"></i>
+                    <span>Partenaires</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#">
+                    <i class="fas fa-cog"></i>
+                    <span>Paramètres</span>
+                </a>
+                <a href="/logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="main-content">
+            <header class="dash-header">
+                <h1>Tableau de bord</h1>
+                <div class="user-menu">
+                    <span class="notifications">
+                        <i class="fas fa-bell"></i>
+                    </span>
+                    <div class="avatar"
+                        th:text="${fullName != null && !fullName.isEmpty() ? fullName.substring(0, 1).toUpperCase() : 'U'}">
+                        T</div>
+                </div>
+            </header>
+
+            <!-- Section Profil -->
+            <div class="profile-card" onclick="location.href='/profil';">
+                <div class="profile-header">
+                    <div class="profile-avatar"
+                        th:text="${fullName != null && !fullName.isEmpty() ? fullName.substring(0, 1).toUpperCase() : 'U'}">
+                        T</div>
+                    <div class="profile-info">
+                        <h2 th:text="${fullName}">Thomas Dubois</h2>
+                        <span class="profile-status">Disponible</span>
+                    </div>
+                    <div class="profile-edit-btn">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                </div>
+                <div class="profile-bio">
+                    <p th:text="${bio}">Développeur web passionné par l'UX/UI et l'accessibilité. Actuellement en
+                        apprentissage de React
+                        et TypeScript.</p>
+                </div>
+                <div class="profile-skills">
+                    <span th:each="skill : ${skills}" th:text="${skill}" class="skill-tag">Développement Web</span>
+                </div>
+            </div>
+
+            <!-- Section Objectifs -->
+            <div class="section-header">
+                <h2>Mes objectifs d'apprentissage</h2>
+                <a href="#" class="view-all">Voir tout</a>
+            </div>
+            <div class="goals-container">
+                <!-- Si pas d'objectifs, afficher un message -->
+                <div th:if="${learningObjectives.empty}" class="no-goals-message">
+                    <p>Vous n'avez pas encore défini d'objectifs d'apprentissage. <a href="/profil">Ajoutez-en ici !</a>
+                    </p>
+                </div>
+
+                <!-- Boucler sur les objectifs réels -->
+                <div th:each="objective : ${learningObjectives}" class="goal-card">
+                    <div class="goal-header">
+                        <h3 th:text="${objective.title}">Titre de l'objectif</h3>
+                        <div class="goal-progress" th:text="${objective.progressPercentage + '%'}">0%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" th:style="'width: ' + ${objective.progressPercentage} + '%;'"></div>
+                    </div>
+                    <div class="goal-deadline">
+                        <i class="fas fa-clock"></i> Échéance: à définir
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
