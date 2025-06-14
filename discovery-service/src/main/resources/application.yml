@@ -1,0 +1,14 @@
+spring.config.import: "configserver:"
+
+spring:
+  application:
+    name: discovery-service
+  cloud:
+    config:
+      uri: http://localhost:8888
+      # Optionnel : active le fail-fast pour échouer rapidement si le config-server n'est pas disponible
+      fail-fast: true
+# Optionnel : profil par défaut
+# spring:
+#   profiles:
+#     active: default

@@ -1,0 +1,36 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: configserver
+  cloud:
+    config:
+      server:
+        #        git:
+        #          uri: https://github.com/NoannNass/config-repo.git
+        #          default-label: main
+        #          search-paths: config
+        #          clone-on-start: true
+        #          # Optionnel: si le repo est privé
+        #          username: ${GIT_USERNAME}
+        #          password: ${GIT_PASSWORD}
+        native:
+          search-locations: classpath:/configuration
+  profiles:
+    active: native
+
+
+#Actuator config
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled: true
+  info:
+    env:
+      enabled: true

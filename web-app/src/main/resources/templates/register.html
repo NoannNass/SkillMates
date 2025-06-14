@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription - SkillMates</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <header class="header">
+        <a href="/" class="logo"><span class="logo-circle">S</span>SkillMates</a>
+    </header>
+    <section class="form-section">
+        <div class="form-card">
+            <h1>Créer un compte</h1>
+            <div class="subtitle">Créez votre compte et commencez votre parcours d'apprentissage collaboratif</div>
+            <form action="/register" method="post">
+                <div th:if="${error}" class="error-message" th:text="${error}"></div>
+                <label for="username">Nom d'utilisateur</label>
+                <input type="text" id="username" name="username" placeholder="Votre nom" required>
+
+                <label for="email">Adresse email</label>
+                <input type="email" id="email" name="email" placeholder="votre@email.com" required>
+
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" placeholder="Créez un mot de passe sécurisé"
+                    required>
+
+                <button type="submit">Créer mon compte&nbsp;&rarr;</button>
+            </form>
+            <div class="form-footer">
+                Déjà un compte ? <a href="/login">Se connecter</a>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

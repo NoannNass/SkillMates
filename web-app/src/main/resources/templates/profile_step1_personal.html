@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Créez votre profil - Informations personnelles</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="progress-bar">
+        <div class="progress" style="width: 25%"></div>
+    </div>
+    <div class="container">
+        <h2>Créez votre profil</h2>
+        <p style="text-align:center; margin-bottom: 24px;">Personnalisez votre profil pour trouver les meilleurs
+            partenaires d'apprentissage</p>
+        <form th:action="@{/profile-completion/step1}" th:object="${personalInfo}" method="post">
+            <div class="form-step">
+                <h3>Informations personnelles</h3>
+                <div class="profile-picture-upload">
+                    <div class="avatar-circle">N</div>
+                    <input type="file" name="profilePicture" accept="image/*" style="margin-bottom: 8px;" />
+                    <p style="margin:0; font-size:0.98rem; color:#7b809a;">Ajoutez une photo de profil (recommandé)</p>
+                </div>
+                <div class="form-group">
+                    <label for="username">Nom d'affichage</label>
+                    <input type="text" id="username" th:field="*{username}"
+                        placeholder="Comment souhaitez-vous être appelé ?" required />
+                </div>
+                <div class="form-group">
+                    <label for="bio">Courte biographie</label>
+                    <textarea id="bio" th:field="*{bio}" maxlength="200"
+                        placeholder="Parlez brièvement de vous, de votre parcours et de vos objectifs d'apprentissage..."></textarea>
+                    <small>Maximum 200 caractères</small>
+                </div>
+                <button type="submit" class="btn btn-primary">Suivant &rarr;</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
