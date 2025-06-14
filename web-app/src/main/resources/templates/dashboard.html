@@ -76,9 +76,10 @@
                 <div class="profile-header">
                     <div class="profile-avatar"
                         th:text="${fullName != null && !fullName.isEmpty() ? fullName.substring(0, 1).toUpperCase() : 'U'}">
-                        T</div>
+                        U</div>
                     <div class="profile-info">
-                        <h2 th:text="${fullName}">Thomas Dubois</h2>
+                        <h2 th:text="${fullName != null && !fullName.isEmpty() ? fullName : 'Utilisateur'}">Utilisateur
+                        </h2>
                         <span class="profile-status">Disponible</span>
                     </div>
                     <div class="profile-edit-btn">
@@ -86,12 +87,17 @@
                     </div>
                 </div>
                 <div class="profile-bio">
-                    <p th:text="${bio}">Développeur web passionné par l'UX/UI et l'accessibilité. Actuellement en
-                        apprentissage de React
-                        et TypeScript.</p>
+                    <p
+                        th:text="${bio != null && !bio.isEmpty() ? bio : 'Aucune biographie disponible. Cliquez pour compléter votre profil.'}">
+                        Aucune biographie disponible. Cliquez pour compléter votre profil.</p>
                 </div>
                 <div class="profile-skills">
-                    <span th:each="skill : ${skills}" th:text="${skill}" class="skill-tag">Développement Web</span>
+                    <th:block th:if="${skills != null && !skills.isEmpty()}">
+                        <span th:each="skill : ${skills}" th:text="${skill}" class="skill-tag">Compétence</span>
+                    </th:block>
+                    <th:block th:unless="${skills != null && !skills.isEmpty()}">
+                        <span class="skill-tag empty">Aucune compétence</span>
+                    </th:block>
                 </div>
             </div>
 
@@ -102,7 +108,7 @@
             </div>
             <div class="goals-container">
                 <!-- Si pas d'objectifs, afficher un message -->
-                <div th:if="${learningObjectives.empty}" class="no-goals-message">
+                <div th:if="${learningObjectives == null || learningObjectives.isEmpty()}" class="no-goals-message">
                     <p>Vous n'avez pas encore défini d'objectifs d'apprentissage. <a href="/profil">Ajoutez-en ici !</a>
                     </p>
                 </div>

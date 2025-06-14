@@ -27,6 +27,10 @@ public class SecurityConfig {
                         .requestMatchers("/", "/home", "/register", "/login", "/static/**", "/actuator/**", "/css/**","/style.css", "/js/**", "/images/**").permitAll()
                         // Permettre l'accès aux pages de création de profil sans authentification complète
                         .requestMatchers("/profile-completion/**").permitAll()
+                        // Permettre l'accès aux pages de débogage
+                        .requestMatchers("/debug/**").permitAll()
+                        // Permettre l'accès aux URLs de synchronisation
+                        .requestMatchers("/sync/**").permitAll()
                         .requestMatchers("/api/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 )

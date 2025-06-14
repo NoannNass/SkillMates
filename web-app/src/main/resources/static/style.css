@@ -607,6 +607,12 @@ body {
     font-weight: 500;
 }
 
+.skill-tag.empty {
+    background: #f3f4f6;
+    color: #6b7280;
+    border: 1px dashed #d1d5db;
+}
+
 /* Statistiques */
 .stats-container {
     display: grid;
@@ -1015,12 +1021,12 @@ body {
 
 /* Message quand aucun objectif n'est défini */
 .no-goals-message {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 20px;
     text-align: center;
-    color: #555;
-    grid-column: 1 / -1;
+    padding: 40px 20px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px dashed #dbeafe;
+    color: #64748b;
 }
 
 .no-goals-message p {

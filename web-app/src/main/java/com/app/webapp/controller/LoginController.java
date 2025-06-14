@@ -59,7 +59,6 @@ public class LoginController {
         return "login";
     }
     
-    // Simuler une connexion réussie pour la démo
     @PostMapping("/login")
     public String processLogin(@RequestParam("username") String email, 
                               @RequestParam("password") String password,
@@ -69,12 +68,31 @@ public class LoginController {
         logger.info("Tentative de connexion pour: {}", email);
         
         try {
-            // Récupérer les informations utilisateur
+            // S'assurer que toute session précédente est nettoyée avant de créer une nouvelle
+            HttpSession existingSession = request.getSession(false);
+            if (existingSession != null) {
+                existingSession.invalidate();
+                logger.info("Session précédente invalidée");
+            }
+            
+            // Nettoyer le contexte de sécurité
+            SecurityContextHolder.clearContext();
+            
+            // Réinitialiser les données utilisateur en session
+            userInfoSession.clear();
+            
+            // Récupérer les informations utilisateur à jour
             ApiResponse<UserDto> response = userClient.getUserByEmail(email);
             if (response != null && response.isSuccess() && response.getData() != null) {
                 UserDto user = response.getData();
+                logger.info("Utilisateur trouvé: id={}, email={}, username={}", 
+                           user.getId(), user.getEmail(), user.getUsername());
                 
-                // Mettre à jour la session
+                // Créer une nouvelle session HTTP
+                HttpSession session = request.getSession(true);
+                logger.info("Nouvelle session créée: {}", session.getId());
+                
+                // Mettre à jour la session avec les données fraîches de l'utilisateur
                 userInfoSession.setUserId(user.getId());
                 userInfoSession.setEmail(user.getEmail());
                 userInfoSession.setUsername(user.getUsername());
@@ -85,11 +103,10 @@ public class LoginController {
                     userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(auth);
                 
-                // Force la création de la session
-                HttpSession session = request.getSession(true);
-                logger.info("Utilisateur authentifié avec succès, session ID: {}", session.getId());
+                logger.info("Utilisateur authentifié avec succès, session ID: {}, userId: {}", 
+                          session.getId(), userInfoSession.getUserId());
                 
-                // Dans une application réelle, l'authentification serait gérée par Spring Security
+                // Redirection vers le dashboard
                 return "redirect:/dashboard";
             } else {
                 logger.warn("Échec de l'authentification : utilisateur non trouvé");
@@ -108,18 +125,19 @@ public class LoginController {
         // Nettoyer les informations de session
         userInfoSession.clear();
         
+        // Nettoyer le contexte de sécurité
+        SecurityContextHolder.clearContext();
+        
         // Invalider la session HTTP
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
+            logger.info("Session invalidée lors de la déconnexion");
         }
-        
-        // Nettoyer le contexte de sécurité
-        SecurityContextHolder.clearContext();
         
         logger.info("Déconnexion effectuée");
         
-        // Dans une application réelle, la déconnexion serait gérée par Spring Security
+        // Redirection vers la page d'accueil
         return "redirect:/";
     }
 } 
