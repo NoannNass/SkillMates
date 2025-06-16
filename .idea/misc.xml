@@ -8,7 +8,14 @@
         <option value="$PROJECT_DIR$/discovery-service/pom.xml" />
         <option value="$PROJECT_DIR$/config-server/pom.xml" />
         <option value="$PROJECT_DIR$/web-app/pom.xml" />
+        <option value="$PROJECT_DIR$/Partnership/pom.xml" />
+        <option value="$PROJECT_DIR$/partnership/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/Partnership/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_23" default="true" project-jdk-name="openjdk-23.0.1" project-jdk-type="JavaSDK">

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Détails du Partenariat</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Détails du Partenariat</h1>
+
+        <div class="actions">
+            <a href="/partnerships" class="btn btn-secondary">Retour aux partenariats</a>
+        </div>
+
+        <div class="partnership-details">
+            <div class="partnership-info">
+                <h2>Informations générales</h2>
+                <p><strong>Statut :</strong> <span th:text="${partnership.status}"></span></p>
+                <p><strong>Date de création :</strong> <span
+                        th:text="${#temporals.format(partnership.createdAt, 'dd/MM/yyyy')}"></span></p>
+                <p th:if="${partnership.acceptedAt}"><strong>Date d'acceptation :</strong> <span
+                        th:text="${#temporals.format(partnership.acceptedAt, 'dd/MM/yyyy')}"></span></p>
+                <p th:if="${partnership.endedAt}"><strong>Date de fin :</strong> <span
+                        th:text="${#temporals.format(partnership.endedAt, 'dd/MM/yyyy')}"></span></p>
+                <p><strong>Message initial :</strong> <span th:text="${partnership.message}"></span></p>
+            </div>
+
+            <div class="partnership-goals" th:if="${partnership.status == 'ACCEPTED'}">
+                <h2>Objectifs communs</h2>
+
+                <div class="goals-list">
+                    <div th:each="goal : ${partnership.goals}" class="goal-card">
+                        <div class="goal-header">
+                            <h3 th:text="${goal.title}"></h3>
+                            <div class="progress">
+                                <div class="progress-bar" th:style="'width: ' + ${goal.progressPercentage} + '%'"></div>
+                                <span class="progress-text" th:text="${goal.progressPercentage} + '%'"></span>
+                            </div>
+                        </div>
+
+                        <div class="goal-content">
+                            <p th:text="${goal.description}"></p>
+                            <p class="target-date" th:if="${goal.targetDate}"
+                                th:text="'Date cible : ' + ${#temporals.format(goal.targetDate, 'dd/MM/yyyy')}"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="add-goal" th:if="${partnership.status == 'ACCEPTED'}">
+                    <h3>Ajouter un objectif</h3>
+                    <form th:action="@{/partnerships/{id}/goals(id=${partnership.id})}" method="post">
+                        <div class="form-group">
+                            <label for="title">Titre :</label>
+                            <input type="text" name="title" id="title" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description :</label>
+                            <textarea name="description" id="description" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="targetDate">Date cible :</label>
+                            <input type="date" name="targetDate" id="targetDate" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Ajouter l'objectif</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="partnership-actions" th:if="${partnership.status == 'ACCEPTED'}">
+                <form th:action="@{/partnerships/{id}/end(id=${partnership.id})}" method="post">
+                    <button type="submit" class="btn btn-danger">Terminer le partenariat</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

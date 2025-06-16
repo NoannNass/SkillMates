@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Suggestions de Partenaires</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Suggestions de Partenaires</h1>
+
+        <div class="actions">
+            <a href="/partnerships" class="btn btn-secondary">Retour aux partenariats</a>
+        </div>
+
+        <div class="suggestions-list">
+            <div th:each="suggestion : ${suggestions}" class="suggestion-card">
+                <div class="suggestion-header">
+                    <h3 th:text="${suggestion.username}"></h3>
+                    <span class="match-score"
+                        th:text="${#numbers.formatDecimal(suggestion.matchScore, 1, 1)} + '% de compatibilité'"></span>
+                </div>
+
+                <div class="suggestion-content">
+                    <p th:text="${suggestion.bio}"></p>
+                    <p class="email" th:text="${suggestion.email}"></p>
+                </div>
+
+                <div class="suggestion-actions">
+                    <form th:action="@{/partnerships/request}" method="post">
+                        <input type="hidden" name="requestedId" th:value="${suggestion.userId}">
+                        <div class="form-group">
+                            <label for="message">Message d'accompagnement :</label>
+                            <textarea name="message" id="message" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Envoyer une demande</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

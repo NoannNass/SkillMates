@@ -1,0 +1,14 @@
+spring.config.import: "configserver:"
+
+spring:
+  application:
+    name: partnership
+  cloud:
+    config:
+      uri: http://localhost:8888
+      fail-fast: true
+# Optionnel : profil par défaut
+# spring:
+#   profiles:
+#     active: default
+

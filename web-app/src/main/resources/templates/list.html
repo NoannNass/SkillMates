@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Mes Partenariats</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Mes Partenariats</h1>
+
+        <div class="actions">
+            <a href="/partnerships/suggestions" class="btn btn-primary">Trouver des partenaires</a>
+        </div>
+
+        <div class="partnerships-list">
+            <div th:each="partnership : ${partnerships}" class="partnership-card">
+                <div class="partnership-header">
+                    <h3
+                        th:text="${partnership.requesterId == userInfoSession.userId ? 'Demande envoyée à ' + partnership.requestedId : 'Demande reçue de ' + partnership.requesterId}">
+                    </h3>
+                    <span class="status" th:text="${partnership.status}"></span>
+                </div>
+
+                <div class="partnership-content">
+                    <p th:text="${partnership.message}"></p>
+                    <p class="date" th:text="${#temporals.format(partnership.createdAt, 'dd/MM/yyyy')}"></p>
+                </div>
+
+                <div class="partnership-actions" th:if="${partnership.status == 'PENDING'}">
+                    <form th:if="${partnership.requestedId == userInfoSession.userId}"
+                        th:action="@{/partnerships/{id}/accept(id=${partnership.id})}" method="post" class="inline">
+                        <button type="submit" class="btn btn-success">Accepter</button>
+                    </form>
+                    <form th:if="${partnership.requestedId == userInfoSession.userId}"
+                        th:action="@{/partnerships/{id}/deny(id=${partnership.id})}" method="post" class="inline">
+                        <button type="submit" class="btn btn-danger">Refuser</button>
+                    </form>
+                    <form th:if="${partnership.requesterId == userInfoSession.userId}"
+                        th:action="@{/partnerships/{id}/cancel(id=${partnership.id})}" method="post" class="inline">
+                        <button type="submit" class="btn btn-warning">Annuler</button>
+                    </form>
+                </div>
+
+                <div class="partnership-actions" th:if="${partnership.status == 'ACCEPTED'}">
+                    <a th:href="@{/partnerships/{id}(id=${partnership.id})}" class="btn btn-info">Voir détails</a>
+                    <form th:action="@{/partnerships/{id}/end(id=${partnership.id})}" method="post" class="inline">
+                        <button type="submit" class="btn btn-danger">Terminer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
