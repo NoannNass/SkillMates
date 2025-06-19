@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.app.webapp.client.UserClient;
 import com.app.webapp.dto.ApiResponse;
 import com.app.webapp.dto.UserDto;
-import com.app.webapp.dto.UserInfoSession;
 import com.app.webapp.security.CustomUserDetailsService;
+import com.app.webapp.security.UserInfoSession;
 
 import jakarta.servlet.http.HttpServletRequest;
 

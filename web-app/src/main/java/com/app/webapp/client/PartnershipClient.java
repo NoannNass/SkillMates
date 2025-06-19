@@ -14,7 +14,7 @@ import com.app.webapp.dto.CreatePartnershipRequestDTO;
 import com.app.webapp.dto.PartnershipDTO;
 import com.app.webapp.dto.UserSuggestionDTO;
 
-@FeignClient(name = "partnership-service", path = "/api/partnerships")
+@FeignClient(name = "partnership", path = "/api/partnerships")
 public interface PartnershipClient {
     
     @PostMapping("/request")
@@ -22,6 +22,12 @@ public interface PartnershipClient {
     
     @GetMapping("/user/{userId}")
     ApiResponse<List<PartnershipDTO>> getUserPartnerships(@PathVariable String userId);
+    
+    @GetMapping("/pending/{userId}")
+    ApiResponse<List<PartnershipDTO>> getPendingPartnerships(@PathVariable String userId);
+    
+    @GetMapping("/active/{userId}")
+    ApiResponse<List<PartnershipDTO>> getActivePartnerships(@PathVariable String userId);
     
     @PutMapping("/{partnershipId}/accept")
     ApiResponse<PartnershipDTO> acceptPartnership(@PathVariable Long partnershipId);

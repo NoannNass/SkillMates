@@ -26,8 +26,8 @@ import com.app.webapp.dto.InterestTagDTO;
 import com.app.webapp.dto.LearningObjectiveDTO;
 import com.app.webapp.dto.PersonalInfoDTO;
 import com.app.webapp.dto.SkillTagDTO;
-import com.app.webapp.dto.UserInfoSession;
 import com.app.webapp.security.CustomUserDetailsService;
+import com.app.webapp.security.UserInfoSession;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

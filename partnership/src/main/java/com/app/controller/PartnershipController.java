@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.dto.ApiResponse;
 import com.app.dto.CreatePartnershipRequestDTO;
 import com.app.dto.PartnershipDTO;
-import com.app.dto.ApiResponse;
 import com.app.dto.UserSuggestionDTO;
 import com.app.service.PartnershipService;
 
@@ -73,5 +73,23 @@ public class PartnershipController {
     public ResponseEntity<ApiResponse<PartnershipDTO>> getPartnership(
             @PathVariable Long partnershipId) {
         return ResponseEntity.ok(partnershipService.getPartnership(partnershipId));
+    }
+
+    @GetMapping("/pending/{userId}")
+    public ResponseEntity<ApiResponse<List<PartnershipDTO>>> getPendingPartnerships(@PathVariable String userId) {
+        List<PartnershipDTO> all = partnershipService.getUserPartnerships(userId).getData();
+        List<PartnershipDTO> pending = all.stream()
+            .filter(p -> p.getStatus() != null && p.getStatus().name().equals("PENDING"))
+            .toList();
+        return ResponseEntity.ok(new ApiResponse<>(true, "Partenariats en attente récupérés", pending));
+    }
+
+    @GetMapping("/active/{userId}")
+    public ResponseEntity<ApiResponse<List<PartnershipDTO>>> getActivePartnerships(@PathVariable String userId) {
+        List<PartnershipDTO> all = partnershipService.getUserPartnerships(userId).getData();
+        List<PartnershipDTO> active = all.stream()
+            .filter(p -> p.getStatus() != null && p.getStatus().name().equals("ACCEPTED"))
+            .toList();
+        return ResponseEntity.ok(new ApiResponse<>(true, "Partenariats actifs récupérés", active));
     }
 } 

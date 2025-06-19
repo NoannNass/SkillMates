@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SkillMates - Partenaires</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo"><span class="logo-circle">S</span>SkillMates</div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Tableau de bord</span>
+                </a>
+                <a href="/profil">
+                    <i class="fas fa-user"></i>
+                    <span>Mon profil</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Mes apprentissages</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-bullseye"></i>
+                    <span>Objectifs</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-calendar"></i>
+                    <span>Sessions</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+                <a href="/partnerships" class="active">
+                    <i class="fas fa-users"></i>
+                    <span>Partenaires</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#">
+                    <i class="fas fa-cog"></i>
+                    <span>Paramètres</span>
+                </a>
+                <a href="/logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="main-content">
+            <header class="dash-header">
+                <h1>Mes Partenaires</h1>
+                <div class="user-menu">
+                    <span class="notifications">
+                        <i class="fas fa-bell"></i>
+                    </span>
+                    <div class="avatar"
+                        th:text="${username != null && !username.isEmpty() ? username.substring(0, 1).toUpperCase() : 'U'}">
+                        U</div>
+                </div>
+            </header>
+
+            <!-- Section Demandes en attente -->
+            <div class="section-header">
+                <h2>Demandes en attente</h2>
+            </div>
+            <div class="partnerships-container">
+                <div th:if="${pendingPartnerships == null || pendingPartnerships.isEmpty()}"
+                    class="no-partnerships-message">
+                    <p>Aucune demande de partenariat en attente.</p>
+                </div>
+                <div th:each="partnership : ${pendingPartnerships}" class="partnership-card pending">
+                    <div class="partnership-header">
+                        <div class="user-info">
+                            <div class="avatar" th:text="${partnership.requesterName.substring(0, 1).toUpperCase()}">U
+                            </div>
+                            <h3 th:text="${partnership.requesterName}">Nom du partenaire</h3>
+                        </div>
+                        <div class="partnership-status">
+                            <span class="status-badge pending">En attente</span>
+                        </div>
+                    </div>
+                    <div class="partnership-message" th:text="${partnership.message}">
+                        Message de la demande de partenariat...
+                    </div>
+                    <div class="partnership-actions">
+                        <button class="btn accept" th:data-id="${partnership.id}">Accepter</button>
+                        <button class="btn deny" th:data-id="${partnership.id}">Refuser</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Partenaires actifs -->
+            <div class="section-header">
+                <h2>Partenaires actifs</h2>
+                <a href="/partnerships/suggestions" class="btn-primary">Trouver des partenaires</a>
+            </div>
+            <div class="partnerships-container">
+                <div th:if="${activePartnerships == null || activePartnerships.isEmpty()}"
+                    class="no-partnerships-message">
+                    <p>Vous n'avez pas encore de partenaires actifs. <a href="/partnerships/suggestions">Trouvez des
+                            partenaires !</a></p>
+                </div>
+                <div th:each="partnership : ${activePartnerships}" class="partnership-card active">
+                    <div class="partnership-header">
+                        <div class="user-info">
+                            <div class="avatar" th:text="${partnership.partnerName.substring(0, 1).toUpperCase()}">U
+                            </div>
+                            <h3 th:text="${partnership.partnerName}">Nom du partenaire</h3>
+                        </div>
+                        <div class="partnership-status">
+                            <span class="status-badge active">Actif</span>
+                        </div>
+                    </div>
+                    <div class="partnership-goals">
+                        <h4>Objectifs communs</h4>
+                        <div th:if="${partnership.goals != null && !partnership.goals.isEmpty()}" class="goals-list">
+                            <div th:each="goal : ${partnership.goals}" class="goal-item">
+                                <span th:text="${goal.title}">Titre de l'objectif</span>
+                                <div class="progress-bar">
+                                    <div class="progress" th:style="'width: ' + ${goal.progressPercentage} + '%;'">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:unless="${partnership.goals != null && !partnership.goals.isEmpty()}" class="no-goals">
+                            <p>Aucun objectif commun défini</p>
+                            <button class="btn-secondary">Ajouter un objectif</button>
+                        </div>
+                    </div>
+                    <div class="partnership-actions">
+                        <button class="btn message" th:data-id="${partnership.id}">
+                            <i class="fas fa-comments"></i> Message
+                        </button>
+                        <button class="btn schedule" th:data-id="${partnership.id}">
+                            <i class="fas fa-calendar"></i> Planifier
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/partnerships.js"></script>
+</body>
+
+</html>
