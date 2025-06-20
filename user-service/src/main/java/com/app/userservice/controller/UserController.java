@@ -320,4 +320,10 @@ public class UserController {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<UserDto>>> searchUsers(@RequestParam String query) {
+        List<UserDto> users = userService.searchUsers(query);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Users found", users));
+    }
 } 

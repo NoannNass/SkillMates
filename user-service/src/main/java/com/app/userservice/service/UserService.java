@@ -1,5 +1,6 @@
 package com.app.userservice.service;
 
+import com.app.userservice.dto.UserDto;
 import com.app.userservice.model.InterestTag;
 import com.app.userservice.model.LearningObjective;
 import com.app.userservice.model.ProfileCompletionStatus;
@@ -40,5 +41,7 @@ public interface UserService {
     User updateLearningObjectives(String userId, List<LearningObjective> objectives);
 
     ProfileCompletionStatus getProfileCompletionStatus(String userId);
+
+    List<UserDto> searchUsers(String query);
 
 }

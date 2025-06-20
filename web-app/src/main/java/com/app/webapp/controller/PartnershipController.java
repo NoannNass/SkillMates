@@ -1,13 +1,20 @@
 package com.app.webapp.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.app.webapp.client.PartnershipClient;
+import com.app.webapp.client.UserClient;
+import com.app.webapp.dto.ApiResponse;
+import com.app.webapp.dto.UserDto;
 import com.app.webapp.security.UserInfoSession;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +26,7 @@ public class PartnershipController {
 
     private final PartnershipClient partnershipClient;
     private final UserInfoSession userInfoSession;
+    private final UserClient userClient;
 
     @GetMapping
     public String partnershipsPage(Model model) {
@@ -57,5 +65,11 @@ public class PartnershipController {
     public String denyPartnership(@PathVariable Long partnershipId) {
         partnershipClient.denyPartnership(partnershipId);
         return "redirect:/partnerships";
+    }
+
+    @GetMapping("/api/partnerships/search")
+    @ResponseBody
+    public ApiResponse<List<UserDto>> searchUsers(@RequestParam String query) {
+        return userClient.searchUsers(query);
     }
 } 
