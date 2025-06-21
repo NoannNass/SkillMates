@@ -116,3 +116,190 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+// Gestion des onglets
+function showTab(tabName) {
+  // Masquer tous les contenus d'onglets
+  const tabContents = document.querySelectorAll(".tab-content");
+  tabContents.forEach((content) => {
+    content.classList.remove("active");
+  });
+
+  // Désactiver tous les onglets
+  const tabs = document.querySelectorAll(".tab");
+  tabs.forEach((tab) => {
+    tab.classList.remove("active");
+  });
+
+  // Afficher l'onglet sélectionné
+  const selectedTab = document.getElementById(tabName + "-tab");
+  if (selectedTab) {
+    selectedTab.classList.add("active");
+  }
+
+  // Activer le bouton d'onglet correspondant
+  const tabButtons = document.querySelectorAll(".tab");
+  tabButtons.forEach((button) => {
+    if (
+      button.textContent
+        .toLowerCase()
+        .includes(tabName === "partners" ? "partenaires" : "mate")
+    ) {
+      button.classList.add("active");
+    }
+  });
+
+  // Si c'est l'onglet "Trouver un mate", charger les utilisateurs
+  if (tabName === "find") {
+    loadAllUsers();
+  }
+}
+
+// Charger tous les utilisateurs
+async function loadAllUsers() {
+  try {
+    const response = await fetch(
+      "/partnerships/api/partnerships/search?query="
+    );
+    const data = await response.json();
+
+    if (data.success) {
+      displayUsers(data.data);
+    } else {
+      console.error(
+        "Erreur lors du chargement des utilisateurs:",
+        data.message
+      );
+    }
+  } catch (error) {
+    console.error("Erreur lors du chargement des utilisateurs:", error);
+  }
+}
+
+// Afficher les utilisateurs dans la liste
+function displayUsers(users) {
+  const usersList = document.getElementById("users-list");
+
+  if (!users || users.length === 0) {
+    usersList.innerHTML =
+      '<div class="no-partnerships-message"><p>Aucun utilisateur trouvé</p></div>';
+    return;
+  }
+
+  usersList.innerHTML = users
+    .map(
+      (user) => `
+        <div class="user-card">
+            <div class="user-info">
+                <div class="avatar">${
+                  user.username ? user.username.charAt(0).toUpperCase() : "U"
+                }</div>
+                <div class="user-details">
+                    <h3>${user.username || "Utilisateur"}</h3>
+                    <p>${user.email || "Email non disponible"}</p>
+                </div>
+            </div>
+            <div class="user-actions">
+                <button class="btn btn-primary" onclick="sendPartnershipRequest('${
+                  user.id
+                }', '${user.username}')">
+                    <i class="fas fa-user-plus"></i> Demander un partenariat
+                </button>
+            </div>
+        </div>
+    `
+    )
+    .join("");
+}
+
+// Recherche d'utilisateurs en temps réel
+let searchTimeout;
+document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("user-search");
+  if (searchInput) {
+    searchInput.addEventListener("input", function () {
+      clearTimeout(searchTimeout);
+      const query = this.value.trim();
+
+      searchTimeout = setTimeout(() => {
+        if (query.length >= 2) {
+          searchUsers(query);
+        } else if (query.length === 0) {
+          loadAllUsers();
+        }
+      }, 300);
+    });
+  }
+});
+
+// Rechercher des utilisateurs
+async function searchUsers(query) {
+  try {
+    const response = await fetch(
+      `/partnerships/api/partnerships/search?query=${encodeURIComponent(query)}`
+    );
+    const data = await response.json();
+
+    if (data.success) {
+      displayUsers(data.data);
+    } else {
+      console.error("Erreur lors de la recherche:", data.message);
+    }
+  } catch (error) {
+    console.error("Erreur lors de la recherche:", error);
+  }
+}
+
+// Envoyer une demande de partenariat
+function sendPartnershipRequest(userId, username) {
+  const message = prompt(
+    `Envoyez un message à ${username} pour expliquer pourquoi vous souhaitez un partenariat :`
+  );
+
+  if (message && message.trim()) {
+    const requestData = {
+      requestedId: userId,
+      message: message.trim(),
+    };
+
+    fetch("/partnerships/request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert("Demande de partenariat envoyée avec succès !");
+          // Recharger la page pour afficher les nouveaux partenariats
+          window.location.reload();
+        } else {
+          alert("Erreur lors de l'envoi de la demande: " + data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Erreur:", error);
+        alert("Erreur lors de l'envoi de la demande");
+      });
+  }
+}
+
+// Confirmation pour les actions de partenariat
+function confirmAction(action, partnershipId) {
+  const messages = {
+    accept: "Êtes-vous sûr de vouloir accepter ce partenariat ?",
+    deny: "Êtes-vous sûr de vouloir refuser ce partenariat ?",
+    cancel: "Êtes-vous sûr de vouloir annuler ce partenariat ?",
+    end: "Êtes-vous sûr de vouloir terminer ce partenariat ?",
+  };
+
+  if (confirm(messages[action])) {
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = `/partnerships/${partnershipId}/${action}`;
+    document.body.appendChild(form);
+    form.submit();
+  }
+}

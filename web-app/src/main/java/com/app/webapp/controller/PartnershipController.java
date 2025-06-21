@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.app.webapp.client.PartnershipClient;
 import com.app.webapp.client.UserClient;
 import com.app.webapp.dto.ApiResponse;
+import com.app.webapp.dto.CreatePartnershipRequestDTO;
 import com.app.webapp.dto.UserDto;
 import com.app.webapp.security.UserInfoSession;
 
@@ -46,13 +48,23 @@ public class PartnershipController {
 
     @GetMapping("/suggestions")
     public String suggestionsPage(Model model) {
-        String userId = userInfoSession.getUserId();
-        var suggestions = partnershipClient.getPartnershipSuggestions(userId);
-        
-        model.addAttribute("suggestions", suggestions.getData());
         model.addAttribute("username", userInfoSession.getUsername());
-        
         return "suggestions";
+    }
+
+    @PostMapping("/search-by-username")
+    public String searchByUsername(@RequestParam String username, Model model) {
+        var user = partnershipClient.searchUserByUsername(username);
+        model.addAttribute("searchedUser", user.getData());
+        model.addAttribute("username", userInfoSession.getUsername());
+        return "suggestions";
+    }
+
+    @PostMapping("/request")
+    @ResponseBody
+    public ApiResponse<?> createPartnershipRequest(@RequestBody CreatePartnershipRequestDTO request) {
+        request.setRequesterId(userInfoSession.getUserId());
+        return partnershipClient.createPartnershipRequest(request);
     }
 
     @PostMapping("/{partnershipId}/accept")
@@ -70,6 +82,12 @@ public class PartnershipController {
     @GetMapping("/api/partnerships/search")
     @ResponseBody
     public ApiResponse<List<UserDto>> searchUsers(@RequestParam String query) {
-        return userClient.searchUsers(query);
+        if (query == null || query.trim().isEmpty()) {
+            // Retourner tous les utilisateurs si la requête est vide
+            return userClient.getAllUsers();
+        } else {
+            // Rechercher par nom d'utilisateur
+            return userClient.searchUsers(query);
+        }
     }
 } 

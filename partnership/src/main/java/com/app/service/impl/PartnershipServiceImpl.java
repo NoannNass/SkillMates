@@ -8,10 +8,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.app.client.UserClient;
 import com.app.dto.ApiResponse;
 import com.app.dto.CreatePartnershipRequestDTO;
 import com.app.dto.PartnershipDTO;
 import com.app.dto.PartnershipGoalDTO;
+import com.app.dto.UserDto;
 import com.app.dto.UserSuggestionDTO;
 import com.app.model.Partnership;
 import com.app.model.PartnershipStatus;
@@ -22,10 +24,12 @@ import com.app.service.PartnershipService;
 public class PartnershipServiceImpl implements PartnershipService {
 
     private final PartnershipRepository partnershipRepository;
+    private final UserClient userClient;
 
     @Autowired
-    public PartnershipServiceImpl(PartnershipRepository partnershipRepository) {
+    public PartnershipServiceImpl(PartnershipRepository partnershipRepository, UserClient userClient) {
         this.partnershipRepository = partnershipRepository;
+        this.userClient = userClient;
     }
 
     @Override
@@ -173,13 +177,8 @@ public class PartnershipServiceImpl implements PartnershipService {
 
     @Override
     public ApiResponse<List<UserSuggestionDTO>> getPartnershipSuggestions(String userId) {
-        try {
-            // TODO: Implémenter la logique de suggestion basée sur les intérêts communs
-            // Pour l'instant, retourner une liste vide
-            return new ApiResponse<>(true, "Suggestions récupérées avec succès", List.of());
-        } catch (Exception e) {
-            return new ApiResponse<>(false, "Erreur lors de la récupération des suggestions", null);
-        }
+        // Ancienne logique supprimée, on invite à utiliser la recherche par username
+        return new ApiResponse<>(true, "Utilisez la recherche par username pour trouver un utilisateur.", List.of());
     }
 
     @Override
@@ -192,6 +191,15 @@ public class PartnershipServiceImpl implements PartnershipService {
             return new ApiResponse<>(true, "Partenariat récupéré avec succès", dto);
         } catch (IllegalArgumentException e) {
             return new ApiResponse<>(false, e.getMessage(), null);
+        }
+    }
+
+    // Nouvelle méthode : recherche d'utilisateur par username
+    public ApiResponse<UserDto> searchUserByUsername(String username) {
+        try {
+            return userClient.getUserByUsername(username);
+        } catch (Exception e) {
+            return new ApiResponse<>(false, "Erreur lors de la recherche de l'utilisateur par username", null);
         }
     }
 

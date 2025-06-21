@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>SkillMates - Partenaires</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -62,43 +62,109 @@
             <h1>Partenaires</h1>
             <p class="subtitle">Gérez vos partenaires d'apprentissage et trouvez de nouveaux mates</p>
 
-            <!-- Barre de recherche -->
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Rechercher un partenaire...">
-            </div>
-
             <!-- Onglets -->
             <div class="tabs">
-                <button class="tab active">Mes partenaires</button>
-                <button class="tab">Trouver un mate</button>
+                <button class="tab active" onclick="showTab('partners')">Mes partenaires</button>
+                <button class="tab" onclick="showTab('find')">Trouver un mate</button>
             </div>
 
-            <!-- Liste des partenaires -->
-            <div class="partnerships-list">
-                <!-- Partenaire -->
-                <div class="partnership-card" th:each="partnership : ${partnerships}"
-                    th:data-partner-id="${partnership.partnerId}">
-                    <div class="partner-info">
-                        <div class="avatar" th:text="${partnership.partnerName?.substring(0, 1)?.toUpperCase()}">M</div>
-                        <div class="partner-details">
-                            <h3 th:text="${partnership.partnerName}">Marie Lefèvre</h3>
+            <!-- Onglet Mes partenaires -->
+            <div id="partners-tab" class="tab-content active">
+                <!-- Partenariats en attente -->
+                <div class="section-header">
+                    <h2>Demandes en attente</h2>
+                </div>
+                <div class="partnerships-list" th:if="${!pendingPartnerships.isEmpty()}">
+                    <div class="partnership-card pending" th:each="partnership : ${pendingPartnerships}">
+                        <div class="partnership-header">
+                            <div class="user-info">
+                                <div class="avatar"
+                                    th:text="${partnership.partnerName?.substring(0, 1)?.toUpperCase()}">M</div>
+                                <div>
+                                    <h3 th:text="${partnership.partnerName}">Marie Lefèvre</h3>
+                                    <span class="status-badge pending">En attente</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="partnership-message" th:if="${partnership.message}">
+                            <p th:text="${partnership.message}">Message de demande</p>
+                        </div>
+                        <div class="partnership-actions">
+                            <form th:action="@{/partnerships/{id}/accept(id=${partnership.id})}" method="post"
+                                style="display: inline;">
+                                <button type="submit" class="btn accept">
+                                    <i class="fas fa-check"></i> Accepter
+                                </button>
+                            </form>
+                            <form th:action="@{/partnerships/{id}/deny(id=${partnership.id})}" method="post"
+                                style="display: inline;">
+                                <button type="submit" class="btn deny">
+                                    <i class="fas fa-times"></i> Refuser
+                                </button>
+                            </form>
                         </div>
                     </div>
+                </div>
+                <div class="no-partnerships-message" th:if="${pendingPartnerships.isEmpty()}">
+                    <p>Aucune demande de partenariat en attente</p>
+                </div>
 
-                    <div class="partnership-content">
-                        <div class="common-goals">
+                <!-- Partenariats actifs -->
+                <div class="section-header">
+                    <h2>Partenariats actifs</h2>
+                </div>
+                <div class="partnerships-list" th:if="${!activePartnerships.isEmpty()}">
+                    <div class="partnership-card active" th:each="partnership : ${activePartnerships}">
+                        <div class="partnership-header">
+                            <div class="user-info">
+                                <div class="avatar"
+                                    th:text="${partnership.partnerName?.substring(0, 1)?.toUpperCase()}">M</div>
+                                <div>
+                                    <h3 th:text="${partnership.partnerName}">Marie Lefèvre</h3>
+                                    <span class="status-badge active">Actif</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="partnership-goals"
+                            th:if="${partnership.goals != null && !partnership.goals.isEmpty()}">
                             <h4>Objectifs communs</h4>
-                            <ul>
-                                <li th:each="goal : ${partnership.goals}" th:text="${goal.title}">Maîtriser React</li>
-                            </ul>
+                            <div class="goals-list">
+                                <div class="goal-item" th:each="goal : ${partnership.goals}">
+                                    <span th:text="${goal.title}">Maîtriser React</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="partnership-actions">
+                            <button class="btn message">
+                                <i class="fas fa-comment"></i> Message
+                            </button>
+                            <button class="btn schedule">
+                                <i class="fas fa-calendar"></i> Planifier
+                            </button>
                         </div>
                     </div>
+                </div>
+                <div class="no-partnerships-message" th:if="${activePartnerships.isEmpty()}">
+                    <p>Aucun partenariat actif</p>
+                    <a href="#" onclick="showTab('find')" class="btn-primary">Trouver un partenaire</a>
+                </div>
+            </div>
 
-                    <div class="partnership-actions">
-                        <button class="btn-primary">
-                            <i class="fas fa-comment"></i> Message
-                        </button>
+            <!-- Onglet Trouver un mate -->
+            <div id="find-tab" class="tab-content">
+                <div class="search-section">
+                    <h2>Trouver un partenaire</h2>
+                    <p>Recherchez des utilisateurs pour créer des partenariats d'apprentissage</p>
+
+                    <!-- Barre de recherche -->
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="user-search" placeholder="Rechercher un utilisateur par nom...">
+                    </div>
+
+                    <!-- Liste des utilisateurs -->
+                    <div class="users-list" id="users-list">
+                        <!-- Les utilisateurs seront chargés ici via JavaScript -->
                     </div>
                 </div>
             </div>

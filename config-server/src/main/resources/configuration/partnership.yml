@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: partnership-service
   datasource:
     url: jdbc:mysql://localhost:3307/partnership?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
     username: root

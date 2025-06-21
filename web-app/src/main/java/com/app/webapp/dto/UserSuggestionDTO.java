@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class UserSuggestionDTO {
     private String userId;
     private String username;
-    private String bio;
-    private String avatarUrl;
-    private int commonInterests;
+    private String email;
+    private double matchScore;
+    private String[] commonInterests;
 } 

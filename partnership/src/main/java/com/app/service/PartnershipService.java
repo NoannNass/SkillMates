@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.app.dto.ApiResponse;
 import com.app.dto.CreatePartnershipRequestDTO;
 import com.app.dto.PartnershipDTO;
+import com.app.dto.UserDto;
 import com.app.dto.UserSuggestionDTO;
 import com.app.model.Partnership;
 import com.app.model.PartnershipStatus;
@@ -74,4 +75,5 @@ public interface PartnershipService {
     ApiResponse<PartnershipDTO> endPartnership(Long partnershipId);
     ApiResponse<List<UserSuggestionDTO>> getPartnershipSuggestions(String userId);
     ApiResponse<PartnershipDTO> getPartnership(Long partnershipId);
+    ApiResponse<UserDto> searchUserByUsername(String username);
 } 

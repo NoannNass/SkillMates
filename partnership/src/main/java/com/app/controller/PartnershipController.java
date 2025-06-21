@@ -92,4 +92,9 @@ public class PartnershipController {
             .toList();
         return ResponseEntity.ok(new ApiResponse<>(true, "Partenariats actifs récupérés", active));
     }
+
+    @GetMapping("/search/username/{username}")
+    public ResponseEntity<ApiResponse<com.app.dto.UserDto>> searchUserByUsername(@PathVariable String username) {
+        return ResponseEntity.ok(partnershipService.searchUserByUsername(username));
+    }
 } 
