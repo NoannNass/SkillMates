@@ -1,7 +1,9 @@
 package com.app.webapp.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,16 +21,25 @@ import com.app.webapp.dto.CreatePartnershipRequestDTO;
 import com.app.webapp.dto.UserDto;
 import com.app.webapp.security.UserInfoSession;
 
-import lombok.RequiredArgsConstructor;
+ 
 
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/partnerships")
 public class PartnershipController {
 
     private final PartnershipClient partnershipClient;
     private final UserInfoSession userInfoSession;
     private final UserClient userClient;
+
+    @Autowired
+    public PartnershipController(
+            PartnershipClient partnershipClient,
+            UserInfoSession userInfoSession,
+            UserClient userClient) {
+        this.partnershipClient = partnershipClient;
+        this.userInfoSession = userInfoSession;
+        this.userClient = userClient;
+    }
 
     @GetMapping
     public String partnershipsPage(Model model) {
@@ -82,12 +93,19 @@ public class PartnershipController {
     @GetMapping("/api/partnerships/search")
     @ResponseBody
     public ApiResponse<List<UserDto>> searchUsers(@RequestParam String query) {
-        if (query == null || query.trim().isEmpty()) {
-            // Retourner tous les utilisateurs si la requête est vide
-            return userClient.getAllUsers();
-        } else {
-            // Rechercher par nom d'utilisateur
-            return userClient.searchUsers(query);
-        }
+        String currentUserId = userInfoSession.getUserId();
+
+        ApiResponse<List<UserDto>> response =
+                (query == null || query.trim().isEmpty())
+                        ? userClient.getAllUsers()
+                        : userClient.searchUsers(query);
+
+        List<UserDto> filtered = response.getData() == null
+                ? List.of()
+                : response.getData().stream()
+                        .filter(u -> u.getId() != null && !u.getId().equals(currentUserId))
+                        .collect(Collectors.toList());
+
+        return ApiResponse.success(filtered);
     }
 } 
