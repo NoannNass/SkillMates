@@ -171,6 +171,92 @@
         </div>
     </div>
 
+    <!-- Modale: Demande de partenariat -->
+    <div id="request-modal" class="modal hidden" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Demander un partenariat</h3>
+            </div>
+            <div class="modal-body">
+                <p id="request-modal-user" class="modal-user"></p>
+                <label for="request-message">Message</label>
+                <textarea id="request-message" rows="5" placeholder="Expliquez pourquoi vous souhaitez collaborer..."
+                    style="width: 100%;"></textarea>
+                <input type="hidden" id="request-user-id" />
+            </div>
+            <div class="modal-footer">
+                <button id="request-cancel" class="btn">Annuler</button>
+                <button id="request-send" class="btn btn-primary">Envoyer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Styles minimaux pour la modale -->
+    <style>
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-dialog {
+            background: #fff;
+            border-radius: 8px;
+            width: min(560px, 92%);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header,
+        .modal-footer {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #eee;
+            border-bottom: none;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .modal-body {
+            padding: 16px 20px;
+        }
+
+        .modal-user {
+            margin: 0 0 8px 0;
+            color: #555;
+        }
+
+        .btn {
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+
     <script src="/js/partnerships.js"></script>
 </body>
 

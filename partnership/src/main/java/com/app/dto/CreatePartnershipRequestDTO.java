@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class CreatePartnershipRequestDTO {
+    private String requesterId;
 
     private String requestedId;
     

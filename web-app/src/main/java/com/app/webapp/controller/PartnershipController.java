@@ -18,6 +18,7 @@ import com.app.webapp.client.PartnershipClient;
 import com.app.webapp.client.UserClient;
 import com.app.webapp.dto.ApiResponse;
 import com.app.webapp.dto.CreatePartnershipRequestDTO;
+import com.app.webapp.dto.PartnershipDTO;
 import com.app.webapp.dto.UserDto;
 import com.app.webapp.security.UserInfoSession;
 
@@ -44,17 +45,37 @@ public class PartnershipController {
     @GetMapping
     public String partnershipsPage(Model model) {
         String userId = userInfoSession.getUserId();
-        
-        // Récupérer les partenariats en attente et actifs
+
         var pendingPartnerships = partnershipClient.getPendingPartnerships(userId);
         var activePartnerships = partnershipClient.getActivePartnerships(userId);
-        
-        // Ajouter les données au modèle
+
+        // Enrichir avec le nom du partenaire attendu par le template (partnerName)
+        enrichPartnerNames(pendingPartnerships.getData(), userId);
+        enrichPartnerNames(activePartnerships.getData(), userId);
+
         model.addAttribute("pendingPartnerships", pendingPartnerships.getData());
         model.addAttribute("activePartnerships", activePartnerships.getData());
         model.addAttribute("username", userInfoSession.getUsername());
-        
+
         return "partnerships";
+    }
+
+    private void enrichPartnerNames(List<PartnershipDTO> partnerships, String currentUserId) {
+        if (partnerships == null) return;
+        for (PartnershipDTO p : partnerships) {
+            try {
+                String partnerId = currentUserId != null && currentUserId.equals(p.getRequesterId())
+                        ? p.getRequestedId()
+                        : p.getRequesterId();
+                if (partnerId == null) continue;
+                var userResp = userClient.getUserById(partnerId);
+                if (userResp != null && userResp.isSuccess() && userResp.getData() != null) {
+                    p.setPartnerName(userResp.getData().getUsername());
+                }
+            } catch (Exception ignored) {
+                // On ignore et laisse partnerName null si l'appel échoue
+            }
+        }
     }
 
     @GetMapping("/suggestions")
@@ -74,8 +95,18 @@ public class PartnershipController {
     @PostMapping("/request")
     @ResponseBody
     public ApiResponse<?> createPartnershipRequest(@RequestBody CreatePartnershipRequestDTO request) {
-        request.setRequesterId(userInfoSession.getUserId());
-        return partnershipClient.createPartnershipRequest(request);
+        try {
+            String currentUserId = userInfoSession.getUserId();
+            if (currentUserId == null || currentUserId.isBlank()) {
+                return ApiResponse.error("Utilisateur non authentifié");
+            }
+
+            request.setRequesterId(currentUserId);
+            return partnershipClient.createPartnershipRequest(request);
+        } catch (Exception ex) {
+            // Toujours renvoyer du JSON vers le front afin d'éviter une page HTML d'erreur
+            return ApiResponse.error("Impossible d'envoyer la demande pour le moment. Veuillez réessayer.");
+        }
     }
 
     @PostMapping("/{partnershipId}/accept")

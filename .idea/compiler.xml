@@ -18,8 +18,16 @@
         <outputRelativeToContentRoot value="true" />
         <module name="config-server" />
         <module name="web-app" />
-        <module name="partnership" />
         <module name="discovery-service" />
+      </profile>
+      <profile name="Annotation profile for partnership" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.m2/repository/org/projectlombok/lombok/1.18.32/lombok-1.18.32.jar" />
+        </processorPath>
+        <module name="partnership" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

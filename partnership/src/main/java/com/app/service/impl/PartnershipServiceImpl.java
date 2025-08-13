@@ -99,8 +99,25 @@ public class PartnershipServiceImpl implements PartnershipService {
     @Override
     public ApiResponse<PartnershipDTO> createPartnershipRequest(CreatePartnershipRequestDTO request) {
         try {
+            // Validations de base
+            if (request.getRequesterId() == null || request.getRequesterId().isBlank()) {
+                return new ApiResponse<>(false, "L'identifiant du demandeur est requis", null);
+            }
+            if (request.getRequestedId() == null || request.getRequestedId().isBlank()) {
+                return new ApiResponse<>(false, "L'identifiant du destinataire est requis", null);
+            }
+            if (request.getRequesterId().equals(request.getRequestedId())) {
+                return new ApiResponse<>(false, "Vous ne pouvez pas créer un partenariat avec vous-même", null);
+            }
+
+            // Empêcher les doublons
+            if (existsPartnershipBetweenUsers(request.getRequesterId(), request.getRequestedId())) {
+                return new ApiResponse<>(false, "Un partenariat existe déjà entre ces utilisateurs", null);
+            }
+
             // Créer un nouveau partenariat
             Partnership partnership = new Partnership();
+            partnership.setRequesterId(request.getRequesterId());
             partnership.setRequestedId(request.getRequestedId());
             partnership.setMessage(request.getMessage());
             partnership.setStatus(PartnershipStatus.PENDING);
@@ -114,6 +131,8 @@ public class PartnershipServiceImpl implements PartnershipService {
             return new ApiResponse<>(true, "Demande de partenariat créée avec succès", dto);
         } catch (IllegalArgumentException e) {
             return new ApiResponse<>(false, e.getMessage(), null);
+        } catch (Exception e) {
+            return new ApiResponse<>(false, "Erreur lors de la création de la demande de partenariat", null);
         }
     }
 
