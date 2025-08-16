@@ -1,0 +1,307 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Context Rules - Microservices Partnership et Message
+
+## 📋 Contexte du projet
+
+Nous développons deux nouveaux microservices pour **SkillNexus**, une plateforme d'apprentissage collaborative :
+
+1. **Partnership Service** - Gestion des partenariats entre utilisateurs
+2. **Message Service** - Messagerie temps réel entre partenaires
+
+Ces services s'intègrent dans une architecture microservices existante avec User Service (MongoDB) et Web-App (Thymeleaf).
+
+## 🏗️ Architecture cible
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│    Web-App      │────►│ Partnership     │────►│ Message Service │
+│   (Thymeleaf)   │     │    Service      │     │  (WebSocket)    │
+│    Port 8083    │     │   Port 8082     │     │   Port 8084     │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+         │                       │                       │
+         └───────────────────────┼───────────────────────┘
+                                 │
+                    ┌─────────────────┐
+                    │  User Service   │
+                    │   (MongoDB)     │
+                    │   Port 8081     │
+                    └─────────────────┘
+```
+
+## 🎯 Partnership Service
+
+### Responsabilités
+- Gestion du cycle de vie des partenariats (PENDING → ACCEPTED/DENIED → ENDED)
+- Algorithme de matching basé sur les intérêts communs
+- Gestion des objectifs communs entre partenaires
+- Planification des sessions de travail
+
+### Stack technique
+- **Framework**: Spring Boot
+- **Base de données**: MySQL
+- **Port**: 8082
+- **Communication**: REST API + Feign Client
+
+### Modèle de données (MySQL)
+
+#### Table `partnerships`
+```sql
+CREATE TABLE partnerships (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    requester_id VARCHAR(255) NOT NULL,      -- ID utilisateur demandeur
+    requested_id VARCHAR(255) NOT NULL,      -- ID utilisateur destinataire  
+    status ENUM('PENDING', 'ACCEPTED', 'DENIED', 'CANCELLED', 'ENDED') DEFAULT 'PENDING',
+    message TEXT,                            -- Message d'accompagnement
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    accepted_at TIMESTAMP NULL,
+    ended_at TIMESTAMP NULL,
+    
+    UNIQUE KEY unique_partnership (requester_id, requested_id)
+);
+```
+
+#### Table `partnership_goals`
+```sql
+CREATE TABLE partnership_goals (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    partnership_id BIGINT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    progress_percentage INT DEFAULT 0,
+    target_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (partnership_id) REFERENCES partnerships(id) ON DELETE CASCADE
+);
+```
+
+### Entité principale
+```java
+@Entity
+@Table(name = "partnerships")
+public class Partnership {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(name = "requester_id", nullable = false)
+    private String requesterId;
+    
+    @Column(name = "requested_id", nullable = false) 
+    private String requestedId;
+    
+    @Enumerated(EnumType.STRING)
+    private PartnershipStatus status;
+    
+    private String message;
+    
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+    
+    @OneToMany(mappedBy = "partnership", cascade = CascadeType.ALL)
+    private List<PartnershipGoal> goals = new ArrayList<>();
+}
+
+public enum PartnershipStatus {
+    PENDING, ACCEPTED, DENIED, CANCELLED, ENDED
+}
+```
+
+### API REST principale
+```java
+@RestController
+@RequestMapping("/api/partnerships")
+public class PartnershipController {
+    
+    @PostMapping("/request")
+    public ResponseEntity<ApiResponse<PartnershipDTO>> createPartnershipRequest(
+        @RequestBody CreatePartnershipRequestDTO request);
+    
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ApiResponse<List<PartnershipDTO>>> getUserPartnerships(
+        @PathVariable String userId);
+    
+    @PutMapping("/{partnershipId}/accept")
+    public ResponseEntity<ApiResponse<PartnershipDTO>> acceptPartnership(
+        @PathVariable Long partnershipId);
+    
+    @GetMapping("/suggestions/{userId}")
+    public ResponseEntity<ApiResponse<List<UserSuggestionDTO>>> getPartnershipSuggestions(
+        @PathVariable String userId);
+}
+```
+
+## 💬 Message Service
+
+### Responsabilités
+- Messagerie temps réel via WebSocket
+- Historique persistant des conversations
+- Notifications de messages non lus
+- **Restriction**: Seuls les partenaires avec status ACCEPTED peuvent communiquer
+
+### Stack technique
+- **Framework**: Spring Boot + WebSocket
+- **Base de données**: MySQL
+- **Port**: 8084
+- **Communication**: REST API + WebSocket + Feign Client
+
+### Modèle de données (MySQL)
+
+#### Table `conversations`
+```sql
+CREATE TABLE conversations (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    partnership_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    UNIQUE KEY unique_conversation (partnership_id)
+);
+```
+
+#### Table `messages`
+```sql
+CREATE TABLE messages (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    conversation_id BIGINT NOT NULL,
+    sender_id VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    message_type ENUM('TEXT', 'FILE', 'IMAGE', 'SYSTEM') DEFAULT 'TEXT',
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE
+);
+```
+
+### Configuration WebSocket
+```java
+@Configuration
+@EnableWebSocket
+public class WebSocketConfig implements WebSocketConfigurer {
+    
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(new MessageWebSocketHandler(), "/ws/messages")
+                .setAllowedOrigins("*")
+                .withSockJS();
+    }
+}
+```
+
+### API REST principale
+```java
+@RestController
+@RequestMapping("/api/messages")
+public class MessageController {
+    
+    @GetMapping("/conversation/{partnershipId}")
+    public ResponseEntity<ApiResponse<ConversationDTO>> getConversation(
+        @PathVariable Long partnershipId);
+    
+    @PostMapping("/send")
+    public ResponseEntity<ApiResponse<MessageDTO>> sendMessage(
+        @RequestBody SendMessageDTO request);
+    
+    @GetMapping("/conversations/{userId}")
+    public ResponseEntity<ApiResponse<List<ConversationSummaryDTO>>> getUserConversations(
+        @PathVariable String userId);
+}
+```
+
+## 🔗 Intégration avec l'existant
+
+### Feign Clients dans Web-App
+```java
+@FeignClient(name = "partnership-service", path = "/api/partnerships")
+public interface PartnershipClient {
+    @GetMapping("/user/{userId}")
+    ApiResponse<List<PartnershipDTO>> getUserPartnerships(@PathVariable String userId);
+    
+    @PostMapping("/request")
+    ApiResponse<PartnershipDTO> createPartnershipRequest(@RequestBody CreatePartnershipRequestDTO request);
+}
+
+@FeignClient(name = "message-service", path = "/api/messages")
+public interface MessageClient {
+    @GetMapping("/conversations/{userId}")
+    ApiResponse<List<ConversationSummaryDTO>> getUserConversations(@PathVariable String userId);
+}
+```
+
+### Controllers Thymeleaf dans Web-App
+```java
+@Controller
+public class PartnershipController {
+    
+    @GetMapping("/partnerships")
+    public String partnershipsPage(Model model) {
+        String userId = userInfoSession.getUserId();
+        var partnerships = partnershipClient.getUserPartnerships(userId);
+        model.addAttribute("partnerships", partnerships.getData());
+        return "partnerships";
+    }
+    
+    @GetMapping("/messages")
+    public String messagesPage(Model model) {
+        String userId = userInfoSession.getUserId();
+        var conversations = messageClient.getUserConversations(userId);
+        model.addAttribute("conversations", conversations.getData());
+        return "messages";
+    }
+}
+```
+
+## 📋 Règles de développement
+
+### 1. Conventions de code
+- **Packages**: `com.app.partnershipservice` et `com.app.messageservice`
+- **Annotations**: Utiliser Lombok pour les entités
+- **DTOs**: Méthodes `fromEntity()` et `toEntity()` pour conversions
+- **Validation**: `@Valid` sur les endpoints + `@NotNull`, `@Size` sur les DTOs
+
+### 2. Gestion des erreurs
+- **ApiResponse<T>**: Format de réponse standardisé avec `success`, `message`, `data`
+- **Exception handling**: `@ControllerAdvice` pour gestion globale
+- **Codes HTTP**: 200 (OK), 201 (Created), 400 (Bad Request), 404 (Not Found)
+
+### 3. Configuration
+- **application.yml**: Configuration par service avec profils
+- **Config Server**: Utilisation du serveur de configuration centralisé
+- **Eureka**: Enregistrement automatique des services
+
+### 4. Tests
+- **Tests unitaires**: Obligatoires pour les services métier
+- **Tests d'intégration**: Pour les repositories et controllers
+- **MockMvc**: Pour tester les endpoints REST
+
+### 5. Sécurité
+- **Validation**: Tous les inputs utilisateur doivent être validés
+- **Autorisation**: Vérifier que l'utilisateur peut accéder aux ressources demandées
+- **CORS**: Configuration appropriée pour les WebSockets
+
+## 🔄 Flux de données principaux
+
+### Création d'un partenariat
+1. User A visite `/partnerships` → Web-App → Partnership Service
+2. User A envoie demande à User B → Partnership Service (status: PENDING)
+3. User B accepte → Partnership Service (status: ACCEPTED)
+4. Message Service crée automatiquement une conversation
+
+### Messagerie temps réel
+1. User A se connecte WebSocket → Message Service
+2. User A envoie message → Message Service (sauvegarde + WebSocket)
+3. User B reçoit message temps réel via WebSocket
+
+### Synchronisation
+- Partnership Service notifie Message Service lors des changements de statut
+- Message Service vérifie les permissions avant chaque message
+- Conversations créées automatiquement lors de l'acceptation d'un partenariat

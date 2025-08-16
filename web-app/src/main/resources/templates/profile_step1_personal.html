@@ -4,23 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Créez votre profil - Informations personnelles</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
+    <header class="header">
+        <a href="/" class="logo"><span class="logo-circle">S</span>SkillMates</a>
+    </header>
     <div class="progress-bar">
         <div class="progress" style="width: 25%"></div>
     </div>
-    <div class="container">
-        <h2>Créez votre profil</h2>
-        <p style="text-align:center; margin-bottom: 24px;">Personnalisez votre profil pour trouver les meilleurs
-            partenaires d'apprentissage</p>
+    <div class="container"
+        style="background: #fff; color: #1a237e; border-radius: 24px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); max-width: 700px; margin: 48px auto; padding: 24px 32px;">
+        <h2 style="color: #1a237e; text-align:center; font-size:2.1rem; font-weight:700; margin-bottom: 8px;">Créez
+            votre profil</h2>
         <form th:action="@{/profile-completion/step1}" th:object="${personalInfo}" method="post">
             <div class="form-step">
-                <h3>Informations personnelles</h3>
-                <div class="profile-picture-upload">
-                    <div class="avatar-circle">N</div>
-                    <input type="file" name="profilePicture" accept="image/*" style="margin-bottom: 8px;" />
+                <h3 style="color: #1a237e; text-align:center; margin-bottom: 18px;">Informations personnelles</h3>
+                <div class="profile-picture-upload"
+                    style="display:flex; flex-direction:column; align-items:center; margin-bottom:18px;">
+                    <div class="avatar-circle" style="width:72px; height:72px; font-size:2.2rem;">N</div>
+                    <label style="margin-top:8px; cursor:pointer;">
+                        <input type="file" name="profilePicture" accept="image/*" style="display:none;" />
+                        <span
+                            style="display:inline-block; background:#e3e8f7; color:#0f4cfd; border-radius:50%; padding:8px; margin-top:-28px; margin-left:48px; position:relative; top:0; left:0; font-size:1.2rem; box-shadow:0 2px 8px rgba(0,0,0,0.07);"><svg
+                                width="18" height="18" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M16.707 9.293a1 1 0 00-1.414 0L11 13.586V3a1 1 0 10-2 0v10.586l-4.293-4.293a1 1 0 00-1.414 1.414l6 6a1 1 0 001.414 0l6-6a1 1 0 000-1.414z">
+                                </path>
+                            </svg></span>
+                    </label>
                     <p style="margin:0; font-size:0.98rem; color:#7b809a;">Ajoutez une photo de profil (recommandé)</p>
                 </div>
                 <div class="form-group">
@@ -34,7 +47,8 @@
                         placeholder="Parlez brièvement de vous, de votre parcours et de vos objectifs d'apprentissage..."></textarea>
                     <small>Maximum 200 caractères</small>
                 </div>
-                <button type="submit" class="btn btn-primary">Suivant &rarr;</button>
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:18px;">Suivant
+                    &rarr;</button>
             </div>
         </form>
     </div>

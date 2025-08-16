@@ -12,10 +12,11 @@ spring:
     mode: HTML
     encoding: UTF-8
     cache: false
-    web:
-      resources:
-        static-locations: classpath:/static/
-        cache:
-          period: 0
-    mvc:
-      static-path-pattern: /**
+
+  web:
+    resources:
+      static-locations: classpath:/static/
+      cache:
+        period: 0
+  mvc:
+    static-path-pattern: /**

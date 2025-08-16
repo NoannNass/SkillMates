@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.app.webapp.client.UserClient;
 import com.app.webapp.dto.LearningObjectiveDTO;
 import com.app.webapp.dto.UserDto;
-import com.app.webapp.dto.UserInfoSession;
+import com.app.webapp.security.UserInfoSession;
 
 @Controller
 public class DashboardController {

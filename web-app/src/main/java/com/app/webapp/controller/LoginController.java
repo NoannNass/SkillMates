@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.app.webapp.client.UserClient;
 import com.app.webapp.dto.ApiResponse;
 import com.app.webapp.dto.UserDto;
-import com.app.webapp.dto.UserInfoSession;
 import com.app.webapp.security.CustomUserDetailsService;
+import com.app.webapp.security.UserInfoSession;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -79,7 +79,10 @@ public class LoginController {
             SecurityContextHolder.clearContext();
             
             // Réinitialiser les données utilisateur en session
-            userInfoSession.clear();
+            userInfoSession.setUserId(null);
+            userInfoSession.setEmail(null);
+            userInfoSession.setUsername(null);
+            userInfoSession.setRole(null);
             
             // Récupérer les informations utilisateur à jour
             ApiResponse<UserDto> response = userClient.getUserByEmail(email);
@@ -123,7 +126,10 @@ public class LoginController {
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
         // Nettoyer les informations de session
-        userInfoSession.clear();
+        userInfoSession.setUserId(null);
+        userInfoSession.setEmail(null);
+        userInfoSession.setUsername(null);
+        userInfoSession.setRole(null);
         
         // Nettoyer le contexte de sécurité
         SecurityContextHolder.clearContext();

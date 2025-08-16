@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Recherche d'utilisateur</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Recherche d'utilisateur par username</h1>
+
+        <div class="actions">
+            <a href="/partnerships" class="btn btn-secondary">Retour aux partenariats</a>
+        </div>
+
+        <form action="/partnerships/search-by-username" method="post" class="search-form">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur :</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+        </form>
+
+        <div th:if="${searchedUser != null}" class="user-result">
+            <div class="suggestion-card">
+                <div class="suggestion-header">
+                    <h3 th:text="${searchedUser.username}"></h3>
+                </div>
+                <div class="suggestion-content">
+                    <p class="email" th:text="${searchedUser.email}"></p>
+                </div>
+                <div class="suggestion-actions">
+                    <form th:action="@{/partnerships/request}" method="post">
+                        <input type="hidden" name="requestedId" th:value="${searchedUser.id}">
+                        <div class="form-group">
+                            <label for="message">Message d'accompagnement :</label>
+                            <textarea name="message" id="message" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Envoyer une demande</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

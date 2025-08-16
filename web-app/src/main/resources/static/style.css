@@ -1041,4 +1041,989 @@ body {
 
 .no-goals-message a:hover {
     text-decoration: underline;
+}
+
+/* ========================================
+   STYLES POUR LES PARTENARIATS ET FORMULAIRES
+   ======================================== */
+
+/* Styles pour les onglets */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Section de recherche */
+.search-section {
+    margin-top: 20px;
+}
+
+.search-section h2 {
+    margin-bottom: 10px;
+    color: #1a237e;
+}
+
+.search-section p {
+    color: #7b809a;
+    margin-bottom: 20px;
+}
+
+/* Liste des utilisateurs */
+.users-list {
+    margin-top: 20px;
+}
+
+.user-card {
+    background: #fff;
+    border: 1px solid #e3e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: box-shadow 0.2s;
+}
+
+.user-card:hover {
+    box-shadow: 0 4px 12px rgba(60, 80, 180, 0.10);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-details h3 {
+    margin: 0 0 5px 0;
+    color: #1a237e;
+}
+
+.user-details p {
+    margin: 0;
+    color: #7b809a;
+    font-size: 0.9rem;
+}
+
+.user-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Styles pour les statuts */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.denied {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-badge.cancelled {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+.status-badge.ended {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Message d'absence de partenariats */
+.no-partnerships-message {
+    text-align: center;
+    padding: 40px 20px;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+.no-partnerships-message p {
+    color: #7b809a;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+/* Responsive pour les onglets */
+@media (max-width: 768px) {
+    .tabs {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .tab {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .user-card {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .user-actions {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ========================================
+   STYLES POUR LES FORMULAIRES ET PROFILS
+   ======================================== */
+
+/* Container principal pour les formulaires */
+.container {
+    max-width: 650px;
+    margin: 48px auto 0 auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(60, 80, 180, 0.10);
+    padding: 40px 32px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Titres */
+h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #1a237e;
+    text-align: center;
+}
+
+h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+    color: #1a237e;
+}
+
+/* Étapes de formulaire */
+.form-step {
+    width: 100%;
+}
+
+/* Groupes de formulaires */
+.form-group {
+    margin-bottom: 22px;
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #1a237e;
+}
+
+/* Champs de saisie */
+input[type="text"], input[type="email"], input[type="password"], textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #dbeafe;
+    border-radius: 10px;
+    font-size: 1rem;
+    background: #f8fafc;
+    margin-top: 6px;
+    margin-bottom: 2px;
+    transition: border 0.2s;
+}
+
+input:focus, textarea:focus {
+    border: 1.5px solid #1976d2;
+    outline: none;
+}
+
+textarea {
+    min-height: 70px;
+    resize: vertical;
+}
+
+/* Boutons */
+.btn, button[type="submit"] {
+    background: #ff8200;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 10px;
+}
+
+.btn-secondary {
+    background: #e3e8f0;
+    color: #1a237e;
+    margin-right: 10px;
+}
+
+.btn:hover, .btn:focus, button[type="submit"]:hover {
+    background: #ff9a2b;
+}
+
+/* Upload de photo de profil */
+.profile-picture-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.avatar-circle {
+    width: 90px;
+    height: 90px;
+    background: #e3e8f0;
+    color: #1a237e;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    border: 4px solid #fff;
+    box-shadow: 0 2px 8px rgba(60, 80, 180, 0.10);
+}
+
+/* Suggestions de tags */
+.suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.tag-suggestion {
+    background: #e3e8f0;
+    color: #1a237e;
+    border-radius: 20px;
+    padding: 7px 18px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.tag-suggestion input[type="checkbox"] {
+    margin-right: 7px;
+}
+
+.tag-suggestion:hover {
+    background: #dbeafe;
+}
+
+/* Conseils */
+.tips {
+    background: #f8fafc;
+    border-left: 4px solid #1976d2;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    color: #1a237e;
+}
+
+/* Navigation de formulaire */
+.form-navigation {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 18px;
+}
+
+/* Texte petit */
+small {
+    color: #7b809a;
+}
+
+/* Barre de progression */
+.progress-bar {
+    width: 100%;
+    height: 7px;
+    background: #e3e8f0;
+    border-radius: 5px;
+    margin-bottom: 28px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: linear-gradient(90deg, #1976d2 0%, #00b8ff 100%);
+    border-radius: 5px;
+    transition: width 0.4s;
+}
+
+/* Responsive pour les formulaires */
+@media (max-width: 600px) {
+    .container {
+        padding: 18px 4vw;
+        max-width: 98vw;
+    }
+    
+    h2 {
+        font-size: 1.3rem;
+    }
+}
+
+/* ========================================
+   STYLES POUR L'APPLICATION PRINCIPALE
+   ======================================== */
+
+/* Layout de l'application */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 260px;
+    background: #fff;
+    box-shadow: 2px 0 8px rgba(60, 80, 180, 0.08);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+}
+
+.sidebar-header {
+    padding: 24px;
+    border-bottom: 1px solid #e3e8f0;
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1a237e;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-circle {
+    background: #ff8200;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.sidebar-nav {
+    padding: 24px 0;
+    flex-grow: 1;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    padding: 12px 24px;
+    color: #64748b;
+    text-decoration: none;
+    transition: all 0.2s;
+    gap: 12px;
+}
+
+.sidebar-nav a:hover {
+    background: #f8fafc;
+    color: #1a237e;
+}
+
+.sidebar-nav a.active {
+    background: #f0f7ff;
+    color: #1976d2;
+    border-right: 3px solid #1976d2;
+}
+
+.sidebar-nav a i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.sidebar-footer {
+    padding: 24px;
+    border-top: 1px solid #e3e8f0;
+}
+
+.sidebar-footer a {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    color: #64748b;
+    text-decoration: none;
+    transition: color 0.2s;
+    gap: 12px;
+}
+
+.sidebar-footer a:hover {
+    color: #1a237e;
+}
+
+.sidebar-footer a i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+/* Contenu principal */
+.main-content {
+    flex-grow: 1;
+    margin-left: 260px;
+    padding: 32px;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+/* En-tête du tableau de bord */
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.dash-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a237e;
+    margin: 0;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.notifications {
+    position: relative;
+    color: #64748b;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.notifications:hover {
+    color: #1a237e;
+}
+
+/* Avatar */
+.avatar {
+    width: 40px;
+    height: 40px;
+    background: #ff8200;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.avatar:hover {
+    transform: scale(1.05);
+}
+
+/* ========================================
+   STYLES POUR LES PARTENARIATS
+   ======================================== */
+
+/* Container des partenariats */
+.partnerships-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Cartes de partenariat */
+.partnership-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(60, 80, 180, 0.08);
+    transition: box-shadow 0.2s;
+}
+
+.partnership-card.pending {
+    border-left: 4px solid #ffc107;
+}
+
+.partnership-card.active {
+    border-left: 4px solid #28a745;
+}
+
+.partnership-card:hover {
+    box-shadow: 0 4px 16px rgba(60, 80, 180, 0.12);
+}
+
+/* En-tête du partenariat */
+.partnership-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Badges de statut */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+/* Message du partenariat */
+.partnership-message {
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    color: #64748b;
+}
+
+/* Objectifs du partenariat */
+.partnership-goals {
+    margin-bottom: 16px;
+}
+
+.partnership-goals h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1a237e;
+}
+
+.goals-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.goal-item {
+    background: #e3e8f0;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    color: #1a237e;
+}
+
+.goal-item span {
+    font-weight: 500;
+}
+
+/* Message d'absence d'objectifs */
+.no-goals {
+    text-align: center;
+    padding: 16px;
+    color: #64748b;
+}
+
+.no-goals p {
+    margin: 0;
+    font-style: italic;
+}
+
+/* Actions du partenariat */
+.partnership-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+/* Boutons */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn.accept {
+    background: #28a745;
+    color: #fff;
+}
+
+.btn.accept:hover {
+    background: #218838;
+}
+
+.btn.deny {
+    background: #dc3545;
+    color: #fff;
+}
+
+.btn.deny:hover {
+    background: #c82333;
+}
+
+.btn.message {
+    background: #17a2b8;
+    color: #fff;
+}
+
+.btn.message:hover {
+    background: #138496;
+}
+
+.btn.schedule {
+    background: #6f42c1;
+    color: #fff;
+}
+
+.btn.schedule:hover {
+    background: #5a32a3;
+}
+
+/* Message d'absence de partenariats */
+.no-partnerships-message {
+    text-align: center;
+    padding: 48px 24px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(60, 80, 180, 0.08);
+}
+
+.no-partnerships-message p {
+    color: #64748b;
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+}
+
+.no-partnerships-message a {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.no-partnerships-message a:hover {
+    text-decoration: underline;
+}
+
+/* En-têtes de section */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1a237e;
+    margin: 0;
+}
+
+.view-all {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Bouton principal */
+.btn-primary {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary:hover {
+    background: #1565c0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+    }
+    
+    .sidebar-header .logo span:not(.logo-circle) {
+        display: none;
+    }
+    
+    .sidebar-nav a span {
+        display: none;
+    }
+    
+    .sidebar-footer a span {
+        display: none;
+    }
+    
+    .main-content {
+        margin-left: 60px;
+        padding: 16px;
+    }
+    
+    .partnerships-container {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding: 12px;
+    }
+    
+    .partnership-actions {
+        flex-direction: column;
+    }
+}
+
+/* ========================================
+   STYLES POUR LA RECHERCHE ET LES ONGLETS
+   ======================================== */
+
+/* Sous-titre */
+.subtitle {
+    color: #64748b;
+    margin-bottom: 24px;
+    font-size: 1.1rem;
+}
+
+/* Barre de recherche */
+.search-bar {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 12px 16px 12px 48px;
+    border: 1px solid #e3e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: #1976d2;
+}
+
+.search-bar i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+/* Onglets */
+.tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #e3e8f0;
+}
+
+.tab {
+    padding: 12px 24px;
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.tab.active {
+    color: #1976d2;
+    font-weight: 600;
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #1976d2;
+}
+
+/* Liste des partenariats */
+.partnerships-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Cartes de partenariat (version alternative) */
+.partnership-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(60, 80, 180, 0.08);
+    transition: box-shadow 0.2s;
+}
+
+.partner-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    background: #ff8200;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.partner-details h3 {
+    margin: 0 0 4px 0;
+    color: #1a237e;
+    font-size: 1.1rem;
+}
+
+.partnership-content {
+    margin-bottom: 16px;
+}
+
+.common-goals h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.common-goals ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.common-goals li {
+    background: #f8fafc;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    color: #1a237e;
+    margin-bottom: 4px;
+}
+
+.partnership-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* Boutons alternatifs */
+.btn-primary {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-primary:hover {
+    background: #1565c0;
+}
+
+.btn-secondary {
+    background: #e3e8f0;
+    color: #1a237e;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-secondary:hover {
+    background: #f8f9fa;
 } 

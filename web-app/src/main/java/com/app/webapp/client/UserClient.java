@@ -62,4 +62,7 @@ public interface UserClient {
 
     @GetMapping("/profile/completion")
     ApiResponse<ProfileCompletionStatus> getProfileCompletionStatus(@RequestParam("userId") String userId);
+
+    @GetMapping("/search")
+    ApiResponse<List<UserDto>> searchUsers(@RequestParam String query);
 }

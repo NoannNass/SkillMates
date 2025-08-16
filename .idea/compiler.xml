@@ -20,12 +20,26 @@
         <module name="web-app" />
         <module name="discovery-service" />
       </profile>
+      <profile name="Annotation profile for partnership" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.m2/repository/org/projectlombok/lombok/1.18.32/lombok-1.18.32.jar" />
+        </processorPath>
+        <module name="partnership" />
+      </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Partnership" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Partnership" options="-parameters" />
       <module name="config-server" options="-parameters" />
       <module name="discovery-service" options="-parameters" />
+      <module name="partnership" options="-parameters" />
       <module name="user-service" options="-parameters" />
       <module name="web-app" options="-parameters" />
     </option>

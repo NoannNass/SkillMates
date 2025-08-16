@@ -1,5 +1,6 @@
 package com.app.userservice.service.impl;
 
+import com.app.userservice.dto.UserDto;
 import com.app.userservice.model.*;
 import com.app.userservice.repository.UserRepository;
 import com.app.userservice.service.InterestService;
@@ -9,13 +10,16 @@ import com.app.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -456,6 +460,15 @@ public class UserServiceImpl implements UserService {
         
         user.setUpdatedAt(new Date());
         return userRepository.save(user);
+    }
+
+    @Override
+    public List<UserDto> searchUsers(String query) {
+        String searchQuery = query.toLowerCase();
+        return userRepository.findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(searchQuery, searchQuery)
+            .stream()
+            .map(UserDto::fromModel)
+            .collect(Collectors.toList());
     }
 
 } 

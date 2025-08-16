@@ -24,7 +24,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home", "/register", "/login", "/static/**", "/actuator/**", "/css/**","/style.css", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/home", "/register", "/login", "/static/**", "/actuator/**", "/css/**", "/style.css", "/js/**", "/images/**", "/webjars/**").permitAll()
                         // Permettre l'accès aux pages de création de profil sans authentification complète
                         .requestMatchers("/profile-completion/**").permitAll()
                         // Permettre l'accès aux pages de débogage
@@ -36,18 +36,17 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/dashboard", true)
-                        .successHandler(authenticationSuccessHandler())
+                        .defaultSuccessUrl("/dashboard")
                         .permitAll()
                 )
-                .logout(logout ->logout
+                .logout(logout -> logout
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll())
-                .exceptionHandling(exceptions ->exceptions
-                .accessDeniedPage("/access-denied"));
+                .exceptionHandling(exceptions -> exceptions
+                        .accessDeniedPage("/access-denied"));
 
         return http.build();
     }
@@ -57,7 +56,6 @@ public class SecurityConfig {
         SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
         handler.setUseReferer(false);
         handler.setDefaultTargetUrl("/dashboard");
-        handler.setAlwaysUseDefaultTargetUrl(true);
         return handler;
     }
 

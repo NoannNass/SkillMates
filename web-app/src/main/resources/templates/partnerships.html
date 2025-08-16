@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SkillMates - Partenaires</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo"><span class="logo-circle">S</span>SkillMates</div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Tableau de bord</span>
+                </a>
+                <a href="/profil">
+                    <i class="fas fa-user"></i>
+                    <span>Mon profil</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Mes apprentissages</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-bullseye"></i>
+                    <span>Objectifs</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-calendar"></i>
+                    <span>Sessions</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+                <a href="/partnerships" class="active">
+                    <i class="fas fa-users"></i>
+                    <span>Partenaires</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#">
+                    <i class="fas fa-cog"></i>
+                    <span>Paramètres</span>
+                </a>
+                <a href="/logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="main-content">
+            <h1>Partenaires</h1>
+            <p class="subtitle">Gérez vos partenaires d'apprentissage et trouvez de nouveaux mates</p>
+
+            <!-- Onglets -->
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('partners')">Mes partenaires</button>
+                <button class="tab" onclick="showTab('find')">Trouver un mate</button>
+            </div>
+
+            <!-- Onglet Mes partenaires -->
+            <div id="partners-tab" class="tab-content active">
+                <!-- Partenariats en attente -->
+                <div class="section-header">
+                    <h2>Demandes en attente</h2>
+                </div>
+                <div class="partnerships-list" th:if="${!pendingPartnerships.isEmpty()}">
+                    <div class="partnership-card pending" th:each="partnership : ${pendingPartnerships}">
+                        <div class="partnership-header">
+                            <div class="user-info">
+                                <div class="avatar"
+                                    th:text="${partnership.partnerName?.substring(0, 1)?.toUpperCase()}">M</div>
+                                <div>
+                                    <h3 th:text="${partnership.partnerName}">Marie Lefèvre</h3>
+                                    <span class="status-badge pending">En attente</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="partnership-message" th:if="${partnership.message}">
+                            <p th:text="${partnership.message}">Message de demande</p>
+                        </div>
+                        <div class="partnership-actions"
+                            th:if="${partnership.requestedId != null and currentUserId != null and partnership.requestedId.equals(currentUserId)}">
+                            <form th:action="@{/partnerships/{id}/accept(id=${partnership.id})}" method="post"
+                                style="display: inline;">
+                                <button type="submit" class="btn accept">
+                                    <i class="fas fa-check"></i> Accepter
+                                </button>
+                            </form>
+                            <form th:action="@{/partnerships/{id}/deny(id=${partnership.id})}" method="post"
+                                style="display: inline;">
+                                <button type="submit" class="btn deny">
+                                    <i class="fas fa-times"></i> Refuser
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="no-partnerships-message" th:if="${pendingPartnerships.isEmpty()}">
+                    <p>Aucune demande de partenariat en attente</p>
+                </div>
+
+                <!-- Partenariats actifs -->
+                <div class="section-header">
+                    <h2>Partenariats actifs</h2>
+                </div>
+                <div class="partnerships-list" th:if="${!activePartnerships.isEmpty()}">
+                    <div class="partnership-card active" th:each="partnership : ${activePartnerships}">
+                        <div class="partnership-header">
+                            <div class="user-info">
+                                <div class="avatar"
+                                    th:text="${partnership.partnerName?.substring(0, 1)?.toUpperCase()}">M</div>
+                                <div>
+                                    <h3 th:text="${partnership.partnerName}">Marie Lefèvre</h3>
+                                    <span class="status-badge active">Actif</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="partnership-goals"
+                            th:if="${partnership.goals != null && !partnership.goals.isEmpty()}">
+                            <h4>Objectifs communs</h4>
+                            <div class="goals-list">
+                                <div class="goal-item" th:each="goal : ${partnership.goals}">
+                                    <span th:text="${goal.title}">Maîtriser React</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="partnership-actions">
+                            <button class="btn message">
+                                <i class="fas fa-comment"></i> Message
+                            </button>
+                            <button class="btn schedule">
+                                <i class="fas fa-calendar"></i> Planifier
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="no-partnerships-message" th:if="${activePartnerships.isEmpty()}">
+                    <p>Aucun partenariat actif</p>
+                    <a href="#" onclick="showTab('find')" class="btn-primary">Trouver un partenaire</a>
+                </div>
+            </div>
+
+            <!-- Onglet Trouver un mate -->
+            <div id="find-tab" class="tab-content">
+                <div class="search-section">
+                    <h2>Trouver un partenaire</h2>
+                    <p>Recherchez des utilisateurs pour créer des partenariats d'apprentissage</p>
+
+                    <!-- Barre de recherche -->
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="user-search" placeholder="Rechercher un utilisateur par nom...">
+                    </div>
+
+                    <!-- Liste des utilisateurs -->
+                    <div class="users-list" id="users-list">
+                        <!-- Les utilisateurs seront chargés ici via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale: Demande de partenariat -->
+    <div id="request-modal" class="modal hidden" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Demander un partenariat</h3>
+            </div>
+            <div class="modal-body">
+                <p id="request-modal-user" class="modal-user"></p>
+                <label for="request-message">Message</label>
+                <textarea id="request-message" rows="5" placeholder="Expliquez pourquoi vous souhaitez collaborer..."
+                    style="width: 100%;"></textarea>
+                <input type="hidden" id="request-user-id" />
+            </div>
+            <div class="modal-footer">
+                <button id="request-cancel" class="btn">Annuler</button>
+                <button id="request-send" class="btn btn-primary">Envoyer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Styles minimaux pour la modale -->
+    <style>
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-dialog {
+            background: #fff;
+            border-radius: 8px;
+            width: min(560px, 92%);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header,
+        .modal-footer {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #eee;
+            border-bottom: none;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .modal-body {
+            padding: 16px 20px;
+        }
+
+        .modal-user {
+            margin: 0 0 8px 0;
+            color: #555;
+        }
+
+        .btn {
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+    </style>
+
+    <script src="/js/partnerships.js"></script>
+</body>
+
+</html>
