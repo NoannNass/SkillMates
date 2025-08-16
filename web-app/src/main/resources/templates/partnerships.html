@@ -89,7 +89,8 @@
                         <div class="partnership-message" th:if="${partnership.message}">
                             <p th:text="${partnership.message}">Message de demande</p>
                         </div>
-                        <div class="partnership-actions">
+                        <div class="partnership-actions"
+                            th:if="${partnership.requestedId != null and currentUserId != null and partnership.requestedId.equals(currentUserId)}">
                             <form th:action="@{/partnerships/{id}/accept(id=${partnership.id})}" method="post"
                                 style="display: inline;">
                                 <button type="submit" class="btn accept">

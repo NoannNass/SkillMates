@@ -56,6 +56,7 @@ public class PartnershipController {
         model.addAttribute("pendingPartnerships", pendingPartnerships.getData());
         model.addAttribute("activePartnerships", activePartnerships.getData());
         model.addAttribute("username", userInfoSession.getUsername());
+        model.addAttribute("currentUserId", userId);
 
         return "partnerships";
     }
