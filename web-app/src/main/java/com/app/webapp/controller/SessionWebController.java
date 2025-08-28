@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.app.webapp.client.PartnershipClient;
 import com.app.webapp.client.SessionClient;
+import com.app.webapp.client.UserClient;
 import com.app.webapp.dto.ApiResponse;
 import com.app.webapp.dto.PartnershipDTO;
 import com.app.webapp.dto.session.CreateSessionRequest;
+import com.app.webapp.dto.session.PartnerOption;
 import com.app.webapp.dto.session.SessionResponse;
 import com.app.webapp.dto.session.SessionStatus;
 import com.app.webapp.security.UserInfoSession;
@@ -30,11 +32,13 @@ public class SessionWebController {
     private final SessionClient sessionClient;
     private final UserInfoSession userInfoSession;
     private final PartnershipClient partnershipClient;
+    private final UserClient userClient;
 
-    public SessionWebController(SessionClient sessionClient, UserInfoSession userInfoSession, PartnershipClient partnershipClient) {
+    public SessionWebController(SessionClient sessionClient, UserInfoSession userInfoSession, PartnershipClient partnershipClient, UserClient userClient) {
         this.sessionClient = sessionClient;
         this.userInfoSession = userInfoSession;
         this.partnershipClient = partnershipClient;
+        this.userClient = userClient;
     }
 
     @GetMapping
@@ -62,17 +66,48 @@ public class SessionWebController {
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
+        String userId = userInfoSession.getUserId();
+        if (userId == null || userId.isBlank()) {
+            return "redirect:/login";
+        }
+
         CreateSessionRequest form = new CreateSessionRequest();
         model.addAttribute("form", form);
-        String userId = userInfoSession.getUserId();
         model.addAttribute("currentUserId", userId);
+
+        java.util.List<PartnershipDTO> partnerships = java.util.List.of();
         try {
             ApiResponse<java.util.List<PartnershipDTO>> resp = partnershipClient.getActivePartnerships(userId);
-            java.util.List<PartnershipDTO> partnerships = resp != null ? resp.getData() : java.util.List.of();
-            model.addAttribute("activePartnerships", partnerships);
+            if (resp != null && resp.getData() != null && !resp.getData().isEmpty()) {
+                partnerships = resp.getData();
+            } else {
+                // Fallback: récupérer tous les partenariats et filtrer côté UI
+                ApiResponse<java.util.List<PartnershipDTO>> all = partnershipClient.getUserPartnerships(userId);
+                if (all != null && all.getData() != null) {
+                    partnerships = all.getData().stream()
+                            .filter(p -> p.getStatus() != null && p.getStatus().equals("ACCEPTED"))
+                            .toList();
+                }
+            }
         } catch (Exception e) {
-            model.addAttribute("activePartnerships", java.util.List.of());
+            // Laisse la liste vide et affiche un message léger côté UI si besoin
         }
+        java.util.List<PartnerOption> partnerOptions = new java.util.ArrayList<>();
+        for (var p : partnerships) {
+            String pid = p.getPartnerId(userId);
+            String pname = p.getPartnerName(userId);
+            if (pname == null || pname.isBlank()) {
+                try {
+                    var userResp = userClient.getUserById(pid);
+                    if (userResp != null && userResp.isSuccess() && userResp.getData() != null) {
+                        pname = userResp.getData().getUsername();
+                    }
+                } catch (Exception ignored) {}
+            }
+            partnerOptions.add(new PartnerOption(pid, pname != null ? pname : pid));
+        }
+        model.addAttribute("partnerOptions", partnerOptions);
+
         return "sessions/create";
     }
 

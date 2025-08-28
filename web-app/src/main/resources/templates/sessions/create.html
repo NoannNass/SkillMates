@@ -88,8 +88,7 @@
                     <label>Partenaire</label>
                     <select th:field="*{partnerId}">
                         <option value="" disabled selected>Choisir un partenaire...</option>
-                        <option th:each="p : ${activePartnerships}" th:value="${p.partnerId(${currentUserId})}"
-                            th:text="${p.partnerName(${currentUserId})}"></option>
+                        <option th:each="opt : ${partnerOptions}" th:value="${opt.id}" th:text="${opt.name}"></option>
                     </select>
 
                     <button type="submit" class="btn-primary">Créer</button>
