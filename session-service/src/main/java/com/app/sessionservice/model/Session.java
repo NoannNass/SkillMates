@@ -54,11 +54,11 @@ public class Session {
     @Column(name = "partnership_id", nullable = false)
     private Long partnershipId;
 
-    @Column(name = "organizer_id", nullable = false)
-    private Long organizerId;
+    @Column(name = "organizer_id", nullable = false, length = 64)
+    private String organizerId;
 
-    @Column(name = "partner_id", nullable = false)
-    private Long partnerId;
+    @Column(name = "partner_id", nullable = false, length = 64)
+    private String partnerId;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -140,19 +140,19 @@ public class Session {
         this.partnershipId = partnershipId;
     }
 
-    public Long getOrganizerId() {
+    public String getOrganizerId() {
         return organizerId;
     }
 
-    public void setOrganizerId(Long organizerId) {
+    public void setOrganizerId(String organizerId) {
         this.organizerId = organizerId;
     }
 
-    public Long getPartnerId() {
+    public String getPartnerId() {
         return partnerId;
     }
 
-    public void setPartnerId(Long partnerId) {
+    public void setPartnerId(String partnerId) {
         this.partnerId = partnerId;
     }
 

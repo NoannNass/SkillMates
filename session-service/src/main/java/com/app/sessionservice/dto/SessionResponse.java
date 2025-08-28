@@ -15,8 +15,8 @@ public class SessionResponse {
     private LocalDateTime endAt;
     private SessionStatus status;
     private Long partnershipId;
-    private Long organizerId;
-    private Long partnerId;
+    private String organizerId;
+    private String partnerId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -92,19 +92,19 @@ public class SessionResponse {
         this.partnershipId = partnershipId;
     }
 
-    public Long getOrganizerId() {
+    public String getOrganizerId() {
         return organizerId;
     }
 
-    public void setOrganizerId(Long organizerId) {
+    public void setOrganizerId(String organizerId) {
         this.organizerId = organizerId;
     }
 
-    public Long getPartnerId() {
+    public String getPartnerId() {
         return partnerId;
     }
 
-    public void setPartnerId(Long partnerId) {
+    public void setPartnerId(String partnerId) {
         this.partnerId = partnerId;
     }
 

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Créer une session</title>
+    <link rel="stylesheet" th:href="@{/style.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo"><span class="logo-circle">S</span>SkillMates</div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Tableau de bord</span>
+                </a>
+                <a href="/profil">
+                    <i class="fas fa-user"></i>
+                    <span>Mon profil</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Mes apprentissages</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-bullseye"></i>
+                    <span>Objectifs</span>
+                </a>
+                <a href="/sessions" class="active">
+                    <i class="fas fa-calendar"></i>
+                    <span>Session</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+                <a href="/partnerships">
+                    <i class="fas fa-users"></i>
+                    <span>Partenaires</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#">
+                    <i class="fas fa-cog"></i>
+                    <span>Paramètres</span>
+                </a>
+                <a href="/logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Déconnexion</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <header class="dash-header">
+                <h1>Créer une session</h1>
+                <a th:href="@{/sessions}" class="btn">Retour</a>
+            </header>
+
+            <div class="card">
+                <form th:action="@{/sessions}" th:object="${form}" method="post">
+                    <label>Titre</label>
+                    <input type="text" th:field="*{title}" />
+
+                    <label>Description</label>
+                    <textarea th:field="*{description}"></textarea>
+
+                    <label>Type</label>
+                    <select th:field="*{type}">
+                        <option th:value="VIRTUAL">VIRTUELLE</option>
+                        <option th:value="PHYSICAL">PHYSIQUE</option>
+                    </select>
+
+                    <label>Lieu/Lien</label>
+                    <input type="text" th:field="*{locationOrLink}" />
+
+                    <label>Début</label>
+                    <input type="datetime-local" th:field="*{startAt}" />
+
+                    <label>Fin</label>
+                    <input type="datetime-local" th:field="*{endAt}" />
+
+                    <label>Partenaire</label>
+                    <select th:field="*{partnerId}">
+                        <option value="" disabled selected>Choisir un partenaire...</option>
+                        <option th:each="p : ${activePartnerships}" th:value="${p.partnerId(${currentUserId})}"
+                            th:text="${p.partnerName(${currentUserId})}"></option>
+                    </select>
+
+                    <button type="submit" class="btn-primary">Créer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

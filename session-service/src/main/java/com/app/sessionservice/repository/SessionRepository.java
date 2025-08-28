@@ -12,12 +12,12 @@ import com.app.sessionservice.model.enums.SessionStatus;
 
 public interface SessionRepository extends JpaRepository<Session, Long> {
 
-    List<Session> findByOrganizerIdOrPartnerId(Long organizerId, Long partnerId);
+    List<Session> findByOrganizerIdOrPartnerId(String organizerId, String partnerId);
 
-    List<Session> findByOrganizerIdOrPartnerIdAndStatus(Long organizerId, Long partnerId, SessionStatus status);
+    List<Session> findByOrganizerIdOrPartnerIdAndStatus(String organizerId, String partnerId, SessionStatus status);
 
     @Query("select s from Session s where (s.organizerId = :userId or s.partnerId = :userId) and s.startAt >= :from and s.endAt <= :to")
-    List<Session> findUserSessionsBetween(@Param("userId") Long userId,
+    List<Session> findUserSessionsBetween(@Param("userId") String userId,
                                           @Param("from") LocalDateTime from,
                                           @Param("to") LocalDateTime to);
 }

@@ -35,11 +35,11 @@ public class CreateSessionRequest {
     @NotNull
     private Long partnershipId;
 
-    @NotNull
-    private Long organizerId;
+    @NotBlank
+    private String organizerId;
 
-    @NotNull
-    private Long partnerId;
+    @NotBlank
+    private String partnerId;
 
     @AssertTrue(message = "startAt must be before endAt")
     public boolean isStartBeforeEnd() {
@@ -119,19 +119,19 @@ public class CreateSessionRequest {
         this.partnershipId = partnershipId;
     }
 
-    public Long getOrganizerId() {
+    public String getOrganizerId() {
         return organizerId;
     }
 
-    public void setOrganizerId(Long organizerId) {
+    public void setOrganizerId(String organizerId) {
         this.organizerId = organizerId;
     }
 
-    public Long getPartnerId() {
+    public String getPartnerId() {
         return partnerId;
     }
 
-    public void setPartnerId(Long partnerId) {
+    public void setPartnerId(String partnerId) {
         this.partnerId = partnerId;
     }
 }

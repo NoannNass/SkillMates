@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.sessionservice.model.enums.SessionStatus;
 import com.app.sessionservice.dto.CreateSessionRequest;
 import com.app.sessionservice.dto.RescheduleRequest;
 import com.app.sessionservice.dto.SessionResponse;
 import com.app.sessionservice.dto.UpdateSessionRequest;
+import com.app.sessionservice.model.enums.SessionStatus;
 import com.app.sessionservice.service.SessionService;
 
 import jakarta.validation.Valid;
@@ -43,7 +43,7 @@ public class SessionController {
 
     @GetMapping
     public ResponseEntity<List<SessionResponse>> list(
-            @RequestParam("userId") Long userId,
+            @RequestParam("userId") String userId,
             @RequestParam(value = "status", required = false) SessionStatus status,
             @RequestParam(value = "from", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
@@ -55,33 +55,33 @@ public class SessionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SessionResponse> getById(@PathVariable("id") Long id,
-                                                   @RequestParam("requesterId") Long requesterId) {
+                                                   @RequestParam("requesterId") String requesterId) {
         return ResponseEntity.ok(sessionService.getById(id, requesterId));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<SessionResponse> update(@PathVariable("id") Long id,
-                                                  @RequestParam("requesterId") Long requesterId,
+                                                  @RequestParam("requesterId") String requesterId,
                                                   @Valid @RequestBody UpdateSessionRequest request) {
         return ResponseEntity.ok(sessionService.update(id, requesterId, request));
     }
 
     @PostMapping("/{id}:reschedule")
     public ResponseEntity<SessionResponse> reschedule(@PathVariable("id") Long id,
-                                                      @RequestParam("requesterId") Long requesterId,
+                                                      @RequestParam("requesterId") String requesterId,
                                                       @Valid @RequestBody RescheduleRequest request) {
         return ResponseEntity.ok(sessionService.reschedule(id, requesterId, request));
     }
 
     @PostMapping("/{id}:cancel")
     public ResponseEntity<SessionResponse> cancel(@PathVariable("id") Long id,
-                                                  @RequestParam("requesterId") Long requesterId) {
+                                                  @RequestParam("requesterId") String requesterId) {
         return ResponseEntity.ok(sessionService.cancel(id, requesterId));
     }
 
     @PostMapping("/{id}:complete")
     public ResponseEntity<SessionResponse> complete(@PathVariable("id") Long id,
-                                                    @RequestParam("requesterId") Long requesterId) {
+                                                    @RequestParam("requesterId") String requesterId) {
         return ResponseEntity.ok(sessionService.complete(id, requesterId));
     }
 }

@@ -43,8 +43,8 @@ public class SessionServiceImpl implements SessionService {
         if (p == null || p.getStatus() == null || !"ACCEPTED".equals(p.getStatus())) {
             throw new IllegalStateException("Partnership must be ACCEPTED");
         }
-        String organizerStr = String.valueOf(request.getOrganizerId());
-        String partnerStr = String.valueOf(request.getPartnerId());
+        String organizerStr = request.getOrganizerId();
+        String partnerStr = request.getPartnerId();
         boolean matches = (organizerStr.equals(p.getRequesterId()) && partnerStr.equals(p.getRequestedId()))
                 || (organizerStr.equals(p.getRequestedId()) && partnerStr.equals(p.getRequesterId()));
         if (!matches) {
@@ -63,11 +63,12 @@ public class SessionServiceImpl implements SessionService {
         session.setPartnerId(request.getPartnerId());
         Session saved = sessionRepository.save(session);
         return toResponse(saved);
+
     }
 
     @Override
     @Transactional(readOnly = true)
-    public SessionResponse getById(Long id, Long requesterId) {
+    public SessionResponse getById(Long id, String requesterId) {
         Session session = getSessionOrThrow(id);
         assertParticipant(session, requesterId);
         return toResponse(session);
@@ -75,7 +76,7 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SessionResponse> listUserSessions(Long userId, SessionStatus status, LocalDateTime from, LocalDateTime to) {
+    public List<SessionResponse> listUserSessions(String userId, SessionStatus status, LocalDateTime from, LocalDateTime to) {
         List<Session> sessions;
         if (from != null && to != null) {
             sessions = sessionRepository.findUserSessionsBetween(userId, from, to);
@@ -88,7 +89,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public SessionResponse update(Long id, Long requesterId, UpdateSessionRequest request) {
+    public SessionResponse update(Long id, String requesterId, UpdateSessionRequest request) {
         Session session = getSessionOrThrow(id);
         assertParticipant(session, requesterId);
         assertPlanned(session);
@@ -102,7 +103,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public SessionResponse reschedule(Long id, Long requesterId, RescheduleRequest request) {
+    public SessionResponse reschedule(Long id, String requesterId, RescheduleRequest request) {
         Session session = getSessionOrThrow(id);
         assertParticipant(session, requesterId);
         assertPlanned(session);
@@ -112,7 +113,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public SessionResponse cancel(Long id, Long requesterId) {
+    public SessionResponse cancel(Long id, String requesterId) {
         Session session = getSessionOrThrow(id);
         assertParticipant(session, requesterId);
         assertPlanned(session);
@@ -121,7 +122,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public SessionResponse complete(Long id, Long requesterId) {
+    public SessionResponse complete(Long id, String requesterId) {
         Session session = getSessionOrThrow(id);
         assertParticipant(session, requesterId);
         assertPlanned(session);
@@ -137,7 +138,7 @@ public class SessionServiceImpl implements SessionService {
         return optional.get();
     }
 
-    private void assertParticipant(Session session, Long requesterId) {
+    private void assertParticipant(Session session, String requesterId) {
         if (requesterId == null ||
             (!requesterId.equals(session.getOrganizerId()) && !requesterId.equals(session.getPartnerId()))) {
             throw new AccessDeniedException("Requester is not a participant of this session");
