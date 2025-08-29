@@ -82,6 +82,7 @@
                             <th>Début</th>
                             <th>Fin</th>
                             <th>Statut</th>
+                            <th>Partenaire</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -91,6 +92,7 @@
                             <td th:text="${s.startAt}"></td>
                             <td th:text="${s.endAt}"></td>
                             <td th:text="${s.status}"></td>
+                            <td th:text="${s.counterpartyName}"></td>
                             <td>
                                 <a th:href="@{'/sessions/' + ${s.id}}">Détails</a>
                             </td>
