@@ -23,6 +23,7 @@ import com.app.webapp.dto.session.CreateSessionRequest;
 import com.app.webapp.dto.session.PartnerOption;
 import com.app.webapp.dto.session.SessionResponse;
 import com.app.webapp.dto.session.SessionStatus;
+import com.app.webapp.dto.session.SessionType;
 import com.app.webapp.security.UserInfoSession;
 
 @Controller
@@ -118,6 +119,16 @@ public class SessionWebController {
         if (form.getPartnerId() == null || form.getPartnerId().isBlank()) {
             br.reject("partner.required", "Le partenaire est requis");
         }
+        // Validation côté UI pour éviter l'aller-retour
+        if (form.getType() == SessionType.VIRTUAL) {
+            if (form.getLocationOrLink() == null || form.getLocationOrLink().isBlank()) {
+                br.rejectValue("locationOrLink", "link.required", "Lien requis pour une session virtuelle");
+            }
+        } else if (form.getType() == SessionType.PHYSICAL) {
+            if (form.getLocationOrLink() == null || form.getLocationOrLink().isBlank()) {
+                br.rejectValue("locationOrLink", "location.required", "Lieu requis pour une session physique");
+            }
+        }
         // Résoudre partnershipId depuis la sélection
         if (!br.hasErrors()) {
             try {
@@ -138,9 +149,39 @@ public class SessionWebController {
             }
         }
         if (br.hasErrors()) {
+            // Réinjecter la liste des partenaires pour ré-afficher la page correctement
+            model.addAttribute("currentUserId", userId);
+            java.util.List<PartnerOption> partnerOptions = new java.util.ArrayList<>();
+            try {
+                ApiResponse<java.util.List<PartnershipDTO>> resp = partnershipClient.getActivePartnerships(userId);
+                java.util.List<PartnershipDTO> partnerships = resp != null && resp.getData() != null
+                        ? resp.getData()
+                        : java.util.List.<PartnershipDTO>of();
+                for (PartnershipDTO p : partnerships) {
+                    String pid = p.getPartnerId(userId);
+                    String pname = p.getPartnerName(userId);
+                    if (pname == null || pname.isBlank()) {
+                        try {
+                            var userResp = userClient.getUserById(pid);
+                            if (userResp != null && userResp.isSuccess() && userResp.getData() != null) {
+                                pname = userResp.getData().getUsername();
+                            }
+                        } catch (Exception ignored) {}
+                    }
+                    partnerOptions.add(new PartnerOption(pid, pname != null ? pname : pid));
+                }
+            } catch (Exception ignored) {}
+            model.addAttribute("partnerOptions", partnerOptions);
             return "sessions/create";
         }
-        sessionClient.create(form);
+        try {
+            sessionClient.create(form);
+        } catch (Exception ex) {
+            br.reject("backend.validation", "Création impossible: " + ex.getMessage());
+            model.addAttribute("currentUserId", userId);
+            model.addAttribute("partnerOptions", java.util.List.of());
+            return "sessions/create";
+        }
         return "redirect:/sessions";
     }
 
@@ -148,7 +189,7 @@ public class SessionWebController {
     public String details(@PathVariable("id") Long id, Model model) {
         String userId = userInfoSession.getUserId();
         SessionResponse session = sessionClient.getById(id, userId);
-        model.addAttribute("session", session);
+        model.addAttribute("learningSession", session);
         return "sessions/details";
     }
 }

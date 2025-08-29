@@ -78,20 +78,27 @@
 
                     <label>Lieu/Lien</label>
                     <input type="text" th:field="*{locationOrLink}" />
+                    <div class="field-error" th:if="${#fields.hasErrors('locationOrLink')}"
+                        th:errors="*{locationOrLink}"></div>
 
                     <label>Début</label>
                     <input type="datetime-local" th:field="*{startAt}" />
+                    <div class="field-error" th:if="${#fields.hasErrors('startAt')}" th:errors="*{startAt}"></div>
 
                     <label>Fin</label>
                     <input type="datetime-local" th:field="*{endAt}" />
+                    <div class="field-error" th:if="${#fields.hasErrors('endAt')}" th:errors="*{endAt}"></div>
 
                     <label>Partenaire</label>
                     <select th:field="*{partnerId}">
                         <option value="" disabled selected>Choisir un partenaire...</option>
                         <option th:each="opt : ${partnerOptions}" th:value="${opt.id}" th:text="${opt.name}"></option>
                     </select>
+                    <div class="field-error" th:if="${#fields.hasErrors('partnerId')}" th:errors="*{partnerId}"></div>
 
                     <button type="submit" class="btn-primary">Créer</button>
+                    <div class="form-error" th:if="${#fields.hasGlobalErrors()}"
+                        th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
                 </form>
             </div>
         </div>

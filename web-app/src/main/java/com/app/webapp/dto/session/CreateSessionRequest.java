@@ -2,12 +2,16 @@ package com.app.webapp.dto.session;
 
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class CreateSessionRequest {
     private String title;
     private String description;
     private SessionType type;
     private String locationOrLink;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime startAt;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime endAt;
     private Long partnershipId;
     private String organizerId;

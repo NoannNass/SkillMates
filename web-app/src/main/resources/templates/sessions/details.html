@@ -58,16 +58,16 @@
 
         <div class="main-content">
             <header class="dash-header">
-                <h1 th:text="${session.title}">Session</h1>
+                <h1 th:text="${learningSession.title}">Session</h1>
                 <a th:href="@{/sessions}" class="btn">Retour</a>
             </header>
 
             <div class="card">
-                <p><b>Statut:</b> <span th:text="${session.status}"></span></p>
-                <p><b>Début:</b> <span th:text="${session.startAt}"></span></p>
-                <p><b>Fin:</b> <span th:text="${session.endAt}"></span></p>
-                <p><b>Type:</b> <span th:text="${session.type}"></span></p>
-                <p><b>Lieu/Lien:</b> <span th:text="${session.locationOrLink}"></span></p>
+                <p><b>Statut:</b> <span th:text="${learningSession.status}"></span></p>
+                <p><b>Début:</b> <span th:text="${learningSession.startAt}"></span></p>
+                <p><b>Fin:</b> <span th:text="${learningSession.endAt}"></span></p>
+                <p><b>Type:</b> <span th:text="${learningSession.type}"></span></p>
+                <p><b>Lieu/Lien:</b> <span th:text="${learningSession.locationOrLink}"></span></p>
             </div>
         </div>
     </div>
