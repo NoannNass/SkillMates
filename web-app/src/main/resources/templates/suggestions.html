@@ -4,6 +4,9 @@
 <head>
     <title>Recherche d'utilisateur</title>
     <link rel="stylesheet" href="/style.css">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <meta name="_csrf_parameter" th:content="${_csrf.parameterName}" />
 </head>
 
 <body>
@@ -15,6 +18,7 @@
         </div>
 
         <form action="/partnerships/search-by-username" method="post" class="search-form">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <div class="form-group">
                 <label for="username">Nom d'utilisateur :</label>
                 <input type="text" id="username" name="username" class="form-control" required>
@@ -32,6 +36,7 @@
                 </div>
                 <div class="suggestion-actions">
                     <form th:action="@{/partnerships/request}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <input type="hidden" name="requestedId" th:value="${searchedUser.id}">
                         <div class="form-group">
                             <label for="message">Message d'accompagnement :</label>

@@ -123,27 +123,5 @@ public class LoginController {
         }
     }
     
-    @GetMapping("/logout")
-    public String logout(HttpServletRequest request) {
-        // Nettoyer les informations de session
-        userInfoSession.setUserId(null);
-        userInfoSession.setEmail(null);
-        userInfoSession.setUsername(null);
-        userInfoSession.setRole(null);
-        
-        // Nettoyer le contexte de sécurité
-        SecurityContextHolder.clearContext();
-        
-        // Invalider la session HTTP
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-            logger.info("Session invalidée lors de la déconnexion");
-        }
-        
-        logger.info("Déconnexion effectuée");
-        
-        // Redirection vers la page d'accueil
-        return "redirect:/";
-    }
+    
 } 

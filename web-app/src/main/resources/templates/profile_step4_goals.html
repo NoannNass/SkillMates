@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <title>Créez votre profil - Objectifs d'apprentissage</title>
     <link rel="stylesheet" href="/style.css">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <meta name="_csrf_parameter" th:content="${_csrf.parameterName}" />
 </head>
 
 <body>
@@ -21,6 +24,7 @@
         <p style="text-align:center; margin-bottom: 24px;">Personnalisez votre profil pour trouver les meilleurs
             partenaires d'apprentissage</p>
         <form id="goalsForm" th:action="@{/profile-completion/step4}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <div class="form-step">
                 <h3>Objectifs d'apprentissage</h3>
                 <p style="margin-bottom: 18px; text-align:center; color: #555;">Définissez vos objectifs pour trouver
