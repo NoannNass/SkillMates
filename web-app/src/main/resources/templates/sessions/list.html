@@ -94,7 +94,21 @@
                             <td th:text="${s.status}"></td>
                             <td th:text="${s.counterpartyName}"></td>
                             <td>
-                                <a th:href="@{'/sessions/' + ${s.id}}">Détails</a>
+                                <div style="display:flex; gap:8px; align-items:center;">
+                                    <a class="btn" th:href="@{'/sessions/' + ${s.id}}">Détails</a>
+                                    <form th:if="${s.status.name() == 'PLANNED'}"
+                                        th:action="@{'/sessions/' + ${s.id} + '/cancel'}" method="post"
+                                        style="display:inline;">
+                                        <button type="submit" class="btn"
+                                            style="background:#e74c3c; color:#fff;">Annuler</button>
+                                    </form>
+                                    <form th:if="${s.status.name() == 'PLANNED'}"
+                                        th:action="@{'/sessions/' + ${s.id} + '/complete'}" method="post"
+                                        style="display:inline;">
+                                        <button type="submit" class="btn"
+                                            style="background:#27ae60; color:#fff;">Terminer</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(sessions)}">

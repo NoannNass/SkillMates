@@ -59,7 +59,19 @@
         <div class="main-content">
             <header class="dash-header">
                 <h1 th:text="${learningSession.title}">Session</h1>
-                <a th:href="@{/sessions}" class="btn">Retour</a>
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <a th:href="@{/sessions}" class="btn">Retour</a>
+                    <form th:if="${learningSession.status.name() == 'PLANNED'}"
+                        th:action="@{'/sessions/' + ${learningSession.id} + '/cancel'}" method="post"
+                        style="display:inline;">
+                        <button type="submit" class="btn" style="background:#e74c3c; color:#fff;">Annuler</button>
+                    </form>
+                    <form th:if="${learningSession.status.name() == 'PLANNED'}"
+                        th:action="@{'/sessions/' + ${learningSession.id} + '/complete'}" method="post"
+                        style="display:inline;">
+                        <button type="submit" class="btn" style="background:#27ae60; color:#fff;">Terminer</button>
+                    </form>
+                </div>
             </header>
 
             <div class="card">
