@@ -6,6 +6,8 @@ spring:
       enabled: false
     bootstrap:
       enabled: false
+  main:
+    allow-bean-definition-overriding: true
 
 eureka:
   client:

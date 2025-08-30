@@ -1,17 +1,14 @@
-server:
-  port: 8081
 spring:
   application:
     name: user-service
-
-  # Database configuration
-
   data:
     mongodb:
       uri: mongodb://skillMates:skillMates_password@mongodb-user-service:27017/admin
       database: skillMates
 
-# Eureka client configuration
+server:
+  port: 8081
+
 eureka:
   client:
     service-url:

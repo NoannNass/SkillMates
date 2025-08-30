@@ -1,0 +1,12 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: web-app
+  main:
+    allow-bean-definition-overriding: true
+eureka:
+  client:
+    enabled: true
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka/
