@@ -10,6 +10,7 @@
         <option value="$PROJECT_DIR$/web-app/pom.xml" />
         <option value="$PROJECT_DIR$/Partnership/pom.xml" />
         <option value="$PROJECT_DIR$/partnership/pom.xml" />
+        <option value="$PROJECT_DIR$/session-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

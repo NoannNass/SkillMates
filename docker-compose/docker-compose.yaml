@@ -41,10 +41,32 @@ services:
       retries: 5
       start_period: 30s
 
+  mysql-session:
+    image: mysql:8.0
+    container_name: mysql-session
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: skillmates_session
+      MYSQL_USER: session_user
+      MYSQL_PASSWORD: session_pass
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql-session-data:/var/lib/mysql
+    networks:
+      - skillmates-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
 volumes:
   mongodb_data:
   mongodb-users-data:
   mysql-partnership-data:
+  mysql-session-data:
 
 networks:
   healthcare:
