@@ -15,7 +15,7 @@ import com.app.webapp.dto.PartnershipDTO;
 import com.app.webapp.dto.UserDto;
 import com.app.webapp.dto.UserSuggestionDTO;
 
-@FeignClient(name = "partnership-service", path = "/api/partnerships")
+@FeignClient(name = "partnership", path = "/api/partnerships")
 public interface PartnershipClient {
     
     @PostMapping("/request")

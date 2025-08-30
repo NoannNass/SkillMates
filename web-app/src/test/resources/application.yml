@@ -1,0 +1,14 @@
+spring:
+  config:
+    import: "optional:classpath:/no-config.yml"
+  cloud:
+    config:
+      enabled: false
+    bootstrap:
+      enabled: false
+  main:
+    allow-bean-definition-overriding: true
+
+eureka:
+  client:
+    enabled: false
