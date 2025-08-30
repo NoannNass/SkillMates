@@ -1,0 +1,12 @@
+spring:
+  config:
+    import: "optional:classpath:/no-config.yml"
+  cloud:
+    config:
+      enabled: false
+    bootstrap:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false
