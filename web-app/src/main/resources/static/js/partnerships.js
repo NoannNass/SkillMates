@@ -1,13 +1,24 @@
 document.addEventListener("DOMContentLoaded", function () {
+  function getCsrf() {
+    const token = document
+      .querySelector('meta[name="_csrf"]')
+      ?.getAttribute("content");
+    const header = document
+      .querySelector('meta[name="_csrf_header"]')
+      ?.getAttribute("content");
+    return { header, token };
+  }
   // Gestion des boutons d'acceptation
   document.querySelectorAll(".btn.accept").forEach((button) => {
     button.addEventListener("click", function () {
       const partnershipId = this.getAttribute("data-id");
       if (confirm("Voulez-vous accepter cette demande de partenariat ?")) {
+        const { header, token } = getCsrf();
         fetch(`/partnerships/${partnershipId}/accept`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            ...(header && token ? { [header]: token } : {}),
           },
         }).then(() => {
           window.location.reload();
@@ -21,10 +32,12 @@ document.addEventListener("DOMContentLoaded", function () {
     button.addEventListener("click", function () {
       const partnershipId = this.getAttribute("data-id");
       if (confirm("Voulez-vous refuser cette demande de partenariat ?")) {
+        const { header, token } = getCsrf();
         fetch(`/partnerships/${partnershipId}/deny`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            ...(header && token ? { [header]: token } : {}),
           },
         }).then(() => {
           window.location.reload();
@@ -294,9 +307,13 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       const payload = { requestedId, message };
       sendBtn.disabled = true;
+      const { header, token } = getCsrf();
       fetch("/partnerships/request", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(header && token ? { [header]: token } : {}),
+        },
         body: JSON.stringify(payload),
       })
         .then(async (response) => {

@@ -4,6 +4,9 @@
 <head>
     <title>Détails du Partenariat</title>
     <link rel="stylesheet" href="/styles.css">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <meta name="_csrf_parameter" th:content="${_csrf.parameterName}" />
 </head>
 
 <body>
@@ -51,6 +54,7 @@
                 <div class="add-goal" th:if="${partnership.status == 'ACCEPTED'}">
                     <h3>Ajouter un objectif</h3>
                     <form th:action="@{/partnerships/{id}/goals(id=${partnership.id})}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <div class="form-group">
                             <label for="title">Titre :</label>
                             <input type="text" name="title" id="title" class="form-control" required>
@@ -70,6 +74,7 @@
 
             <div class="partnership-actions" th:if="${partnership.status == 'ACCEPTED'}">
                 <form th:action="@{/partnerships/{id}/end(id=${partnership.id})}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <button type="submit" class="btn btn-danger">Terminer le partenariat</button>
                 </form>
             </div>

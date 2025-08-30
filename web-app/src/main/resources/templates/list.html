@@ -4,6 +4,9 @@
 <head>
     <title>Mes Partenariats</title>
     <link rel="stylesheet" href="/styles.css">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <meta name="_csrf_parameter" th:content="${_csrf.parameterName}" />
 </head>
 
 <body>
@@ -31,14 +34,17 @@
                 <div class="partnership-actions" th:if="${partnership.status == 'PENDING'}">
                     <form th:if="${partnership.requestedId == userInfoSession.userId}"
                         th:action="@{/partnerships/{id}/accept(id=${partnership.id})}" method="post" class="inline">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <button type="submit" class="btn btn-success">Accepter</button>
                     </form>
                     <form th:if="${partnership.requestedId == userInfoSession.userId}"
                         th:action="@{/partnerships/{id}/deny(id=${partnership.id})}" method="post" class="inline">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <button type="submit" class="btn btn-danger">Refuser</button>
                     </form>
                     <form th:if="${partnership.requesterId == userInfoSession.userId}"
                         th:action="@{/partnerships/{id}/cancel(id=${partnership.id})}" method="post" class="inline">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <button type="submit" class="btn btn-warning">Annuler</button>
                     </form>
                 </div>
@@ -46,6 +52,7 @@
                 <div class="partnership-actions" th:if="${partnership.status == 'ACCEPTED'}">
                     <a th:href="@{/partnerships/{id}(id=${partnership.id})}" class="btn btn-info">Voir détails</a>
                     <form th:action="@{/partnerships/{id}/end(id=${partnership.id})}" method="post" class="inline">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                         <button type="submit" class="btn btn-danger">Terminer</button>
                     </form>
                 </div>
