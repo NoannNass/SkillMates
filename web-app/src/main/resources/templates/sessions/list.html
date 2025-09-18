@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sessions</title>
     <link rel="stylesheet" th:href="@{/style.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -28,6 +29,7 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="logo"><span class="logo-circle">S</span>SkillMates</div>
+                <div class="close-sidebar"><i class="fas fa-times"></i></div>
             </div>
             <nav class="sidebar-nav">
                 <a href="/dashboard">
@@ -77,6 +79,9 @@
 
         <div class="main-content">
             <header class="dash-header">
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
                 <h1>Mes sessions</h1>
                 <a class="btn-primary" th:href="@{/sessions/new}">Créer une session</a>
             </header>
@@ -130,6 +135,16 @@
             </div>
         </div>
     </div>
+    <script>
+        // Script pour le menu burger de la sidebar
+        document.querySelector('.menu-toggle').addEventListener('click', function () {
+            document.querySelector('.sidebar').classList.add('active');
+        });
+
+        document.querySelector('.close-sidebar').addEventListener('click', function () {
+            document.querySelector('.sidebar').classList.remove('active');
+        });
+    </script>
 </body>
 
 </html>

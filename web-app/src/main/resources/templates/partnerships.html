@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkillMates - Partenaires</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,6 +18,7 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="logo"><span class="logo-circle">S</span>SkillMates</div>
+                <div class="close-sidebar"><i class="fas fa-times"></i></div>
             </div>
             <nav class="sidebar-nav">
                 <a href="/dashboard">
@@ -66,7 +68,20 @@
 
         <!-- Contenu principal -->
         <div class="main-content">
-            <h1>Partenaires</h1>
+            <header class="dash-header">
+                <div class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <h1>Partenaires</h1>
+                <div class="user-menu">
+                    <span class="notifications">
+                        <i class="fas fa-bell"></i>
+                    </span>
+                    <div class="avatar"
+                        th:text="${fullName != null && !fullName.isEmpty() ? fullName.substring(0, 1).toUpperCase() : 'U'}">
+                        T</div>
+                </div>
+            </header>
             <p class="subtitle">Gérez vos partenaires d'apprentissage et trouvez de nouveaux mates</p>
 
             <!-- Onglets -->
@@ -268,6 +283,16 @@
     </style>
 
     <script src="/js/partnerships.js"></script>
+    <script>
+        // Script pour le menu burger de la sidebar
+        document.querySelector('.menu-toggle').addEventListener('click', function () {
+            document.querySelector('.sidebar').classList.add('active');
+        });
+
+        document.querySelector('.close-sidebar').addEventListener('click', function () {
+            document.querySelector('.sidebar').classList.remove('active');
+        });
+    </script>
 </body>
 
 </html>

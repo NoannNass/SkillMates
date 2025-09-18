@@ -3,8 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkillMates - Accueil</title>
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -19,7 +21,23 @@
             <a href="/login">Se connecter</a>
             <a href="/register" class="signup">S'inscrire</a>
         </div>
+        <div class="burger-menu">
+            <i class="fas fa-bars"></i>
+        </div>
     </header>
+    <div class="mobile-menu">
+        <div class="mobile-menu-header">
+            <div class="logo"><span class="logo-circle">S</span>SkillMates</div>
+            <div class="close-menu"><i class="fas fa-times"></i></div>
+        </div>
+        <nav class="mobile-nav">
+            <a href="#how">Comment ça marche</a>
+            <a href="#testimonials">Témoignages</a>
+            <a href="#faq">FAQ</a>
+            <a href="/login">Se connecter</a>
+            <a href="/register" class="signup-mobile">S'inscrire</a>
+        </nav>
+    </div>
     <section class="hero">
         <div class="hero-content">
             <h1 class="hero-title">Apprenez mieux <span class="accent">ensemble</span></h1>
@@ -93,6 +111,16 @@
             l'apprentissage collaboratif.</div>
         <a href="/register" class="cta-btn">Commencer gratuitement</a>
     </section>
+    <script>
+        // Script pour le menu burger
+        document.querySelector('.burger-menu').addEventListener('click', function () {
+            document.querySelector('.mobile-menu').classList.add('active');
+        });
+
+        document.querySelector('.close-menu').addEventListener('click', function () {
+            document.querySelector('.mobile-menu').classList.remove('active');
+        });
+    </script>
 </body>
 
 </html>
