@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.app.sessionservice.client.dto.ApiResponse;
 import com.app.sessionservice.client.dto.PartnershipDTO;
 
-@FeignClient(name = "partnership-service")
+@FeignClient(name = "partnership")
 public interface PartnershipClient {
 
     @GetMapping("/api/partnerships/{partnershipId}")

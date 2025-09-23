@@ -46,6 +46,28 @@ public class PartnershipController {
     public String partnershipsPage(Model model) {
         String userId = userInfoSession.getUserId();
 
+        if (userId == null) {
+            var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof org.springframework.security.core.userdetails.User userDetails) {
+                String email = userDetails.getUsername();
+                try {
+                    var response = userClient.getUserByEmail(email);
+                    if (response != null && response.getData() != null) {
+                        var user = response.getData();
+                        userInfoSession.setUserId(user.getId());
+                        userInfoSession.setEmail(user.getEmail());
+                        userInfoSession.setUsername(user.getUsername());
+                        userId = user.getId();
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        }
+
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
         var pendingPartnerships = partnershipClient.getPendingPartnerships(userId);
         var activePartnerships = partnershipClient.getActivePartnerships(userId);
 

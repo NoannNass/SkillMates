@@ -1,28 +1,91 @@
+// Fonction utilitaire pour obtenir les jetons CSRF
+function getCsrf() {
+  const token = document
+    .querySelector('meta[name="_csrf"]')
+    ?.getAttribute("content");
+  const header = document
+    .querySelector('meta[name="_csrf_header"]')
+    ?.getAttribute("content");
+  return { header, token };
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-  function getCsrf() {
-    const token = document
-      .querySelector('meta[name="_csrf"]')
-      ?.getAttribute("content");
-    const header = document
-      .querySelector('meta[name="_csrf_header"]')
-      ?.getAttribute("content");
-    return { header, token };
+  // Vérifier si nous venons d'un rafraîchissement après acceptation d'un partenariat
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has("refresh")) {
+    // Supprimer le paramètre de l'URL sans recharger la page
+    const newUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, newUrl);
+
+    // Mettre en évidence la section des partenariats actifs
+    const activePartnershipsHeader = document.querySelector(
+      ".section-header:nth-of-type(2)"
+    );
+    if (activePartnershipsHeader) {
+      activePartnershipsHeader.scrollIntoView({ behavior: "smooth" });
+      activePartnershipsHeader.style.backgroundColor = "#f0f8ff";
+      activePartnershipsHeader.style.transition = "background-color 1s";
+      setTimeout(() => {
+        activePartnershipsHeader.style.backgroundColor = "";
+      }, 2000);
+    }
   }
+
   // Gestion des boutons d'acceptation
   document.querySelectorAll(".btn.accept").forEach((button) => {
     button.addEventListener("click", function () {
       const partnershipId = this.getAttribute("data-id");
       if (confirm("Voulez-vous accepter cette demande de partenariat ?")) {
         const { header, token } = getCsrf();
+        button.disabled = true;
         fetch(`/partnerships/${partnershipId}/accept`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             ...(header && token ? { [header]: token } : {}),
           },
-        }).then(() => {
-          window.location.reload();
-        });
+        })
+          .then((response) => {
+            if (response.ok) {
+              // Trouver et supprimer la carte de partenariat
+              const partnershipCard = button.closest(".partnership-card");
+              if (partnershipCard) {
+                // Animation de disparition
+                partnershipCard.style.opacity = "0";
+                partnershipCard.style.transition = "opacity 0.5s";
+
+                // Supprimer l'élément après l'animation
+                setTimeout(() => {
+                  partnershipCard.remove();
+
+                  // Vérifier s'il reste des partenariats en attente
+                  const pendingList =
+                    document.querySelector(".partnerships-list");
+                  if (pendingList && pendingList.children.length === 0) {
+                    const noPartnershipsMessage = document.querySelector(
+                      ".no-partnerships-message"
+                    );
+                    if (noPartnershipsMessage) {
+                      noPartnershipsMessage.style.display = "block";
+                    }
+                  }
+
+                  // Recharger les partenariats actifs sans recharger toute la page
+                  loadActivePartnerships();
+                }, 500);
+              }
+            } else {
+              console.error("Erreur lors de l'acceptation du partenariat");
+              button.disabled = false;
+            }
+          })
+          .catch((error) => {
+            console.error(
+              "Erreur lors de l'acceptation du partenariat:",
+              error
+            );
+            button.disabled = false;
+          });
       }
     });
   });
@@ -33,15 +96,49 @@ document.addEventListener("DOMContentLoaded", function () {
       const partnershipId = this.getAttribute("data-id");
       if (confirm("Voulez-vous refuser cette demande de partenariat ?")) {
         const { header, token } = getCsrf();
+        button.disabled = true;
         fetch(`/partnerships/${partnershipId}/deny`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             ...(header && token ? { [header]: token } : {}),
           },
-        }).then(() => {
-          window.location.reload();
-        });
+        })
+          .then((response) => {
+            if (response.ok) {
+              // Trouver et supprimer la carte de partenariat
+              const partnershipCard = button.closest(".partnership-card");
+              if (partnershipCard) {
+                // Animation de disparition
+                partnershipCard.style.opacity = "0";
+                partnershipCard.style.transition = "opacity 0.5s";
+
+                // Supprimer l'élément après l'animation
+                setTimeout(() => {
+                  partnershipCard.remove();
+
+                  // Vérifier s'il reste des partenariats en attente
+                  const pendingList =
+                    document.querySelector(".partnerships-list");
+                  if (pendingList && pendingList.children.length === 0) {
+                    const noPartnershipsMessage = document.querySelector(
+                      ".no-partnerships-message"
+                    );
+                    if (noPartnershipsMessage) {
+                      noPartnershipsMessage.style.display = "block";
+                    }
+                  }
+                }, 500);
+              }
+            } else {
+              console.error("Erreur lors du refus du partenariat");
+              button.disabled = false;
+            }
+          })
+          .catch((error) => {
+            console.error("Erreur lors du refus du partenariat:", error);
+            button.disabled = false;
+          });
       }
     });
   });
@@ -346,6 +443,46 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
+// Fonction pour charger les partenariats actifs
+async function loadActivePartnerships() {
+  try {
+    const userId =
+      document.querySelector(".partnership-card")?.dataset?.currentUserId;
+    if (!userId) {
+      // Si nous ne pouvons pas récupérer l'ID utilisateur, rechargeons la page
+      window.location.reload();
+      return;
+    }
+
+    // Afficher un indicateur de chargement
+    const activeSection =
+      document.querySelector(".partnerships-list + .no-partnerships-message") ||
+      document.querySelector(".section-header + .partnerships-list");
+    if (activeSection) {
+      const loadingIndicator = document.createElement("div");
+      loadingIndicator.id = "loading-partnerships";
+      loadingIndicator.innerHTML =
+        "<p>Chargement des partenariats actifs...</p>";
+      loadingIndicator.style.textAlign = "center";
+      loadingIndicator.style.padding = "1rem";
+      activeSection.parentNode.insertBefore(
+        loadingIndicator,
+        activeSection.nextSibling
+      );
+    }
+
+    // Attendre un court instant pour montrer l'animation de chargement et permettre à l'UI de se mettre à jour
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Recharger la page avec un paramètre pour indiquer qu'il s'agit d'un rafraîchissement
+    window.location.href = "/partnerships?refresh=true";
+  } catch (error) {
+    console.error("Erreur lors du chargement des partenariats actifs:", error);
+    // En cas d'erreur, recharger la page
+    window.location.reload();
+  }
+}
 
 // Confirmation pour les actions de partenariat
 function confirmAction(action, partnershipId) {
