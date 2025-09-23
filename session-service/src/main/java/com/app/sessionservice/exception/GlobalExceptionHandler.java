@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.app.sessionservice.service.impl.SessionServiceImpl.AccessDeniedException;
 import com.app.sessionservice.service.impl.SessionServiceImpl.ResourceNotFoundException;
 
+import feign.FeignException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -55,6 +57,16 @@ public class GlobalExceptionHandler {
         body.put("status", HttpStatus.BAD_REQUEST.value());
         body.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<Map<String, Object>> handleFeign(FeignException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        int status = ex.status() >= 400 ? ex.status() : HttpStatus.BAD_GATEWAY.value();
+        body.put("status", status);
+        body.put("message", ex.getMessage());
+        return ResponseEntity.status(status).body(body);
     }
 }
 
