@@ -97,7 +97,8 @@
                     <h2>Demandes en attente</h2>
                 </div>
                 <div class="partnerships-list" th:if="${!pendingPartnerships.isEmpty()}">
-                    <div class="partnership-card pending" th:each="partnership : ${pendingPartnerships}">
+                    <div class="partnership-card pending" th:each="partnership : ${pendingPartnerships}"
+                        th:data-current-user-id="${currentUserId}">
                         <div class="partnership-header">
                             <div class="user-info">
                                 <div class="avatar"
@@ -113,24 +114,16 @@
                         </div>
                         <div class="partnership-actions"
                             th:if="${partnership.requestedId != null and currentUserId != null and partnership.requestedId.equals(currentUserId)}">
-                            <form th:action="@{/partnerships/{id}/accept(id=${partnership.id})}" method="post"
-                                style="display: inline;">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                                <button type="submit" class="btn accept">
-                                    <i class="fas fa-check"></i> Accepter
-                                </button>
-                            </form>
-                            <form th:action="@{/partnerships/{id}/deny(id=${partnership.id})}" method="post"
-                                style="display: inline;">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                                <button type="submit" class="btn deny">
-                                    <i class="fas fa-times"></i> Refuser
-                                </button>
-                            </form>
+                            <button type="button" class="btn accept" th:data-id="${partnership.id}">
+                                <i class="fas fa-check"></i> Accepter
+                            </button>
+                            <button type="button" class="btn deny" th:data-id="${partnership.id}">
+                                <i class="fas fa-times"></i> Refuser
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div class="no-partnerships-message" th:if="${pendingPartnerships.isEmpty()}">
+                <div class="no-partnerships-message" th:if="${pendingPartnerships.isEmpty()}" style="display: block;">
                     <p>Aucune demande de partenariat en attente</p>
                 </div>
 
