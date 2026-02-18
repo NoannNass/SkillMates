@@ -44,6 +44,17 @@ public class RegisterController {
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("user") UserDto userDto, Model model, HttpServletRequest request) {
         logger.info("Tentative d'inscription : {} / {}", userDto.getUsername(), userDto.getEmail());
+
+        // Validation du mot de passe côté web-app
+        String password = userDto.getPassword();
+        if (password == null || password.length() < 8
+                || !password.matches(".*[A-Z].*")
+                || !password.matches(".*[a-z].*")
+                || !password.matches(".*[0-9].*")) {
+            model.addAttribute("error", "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre.");
+            return "register";
+        }
+
         try {
             ApiResponse<UserDto> response = userClient.createUser(userDto);
             logger.info("Réponse du user-service : {}", response);

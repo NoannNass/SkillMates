@@ -2463,6 +2463,58 @@ select {
 .form-card select:focus,
 select:focus { border-color: var(--color-primary) !important; outline: none; }
 
+/* Wrapper mot de passe avec bouton toggle */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+.password-wrapper input {
+    padding-right: 44px !important;
+}
+.password-toggle {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-muted);
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.password-toggle:hover {
+    color: var(--color-text);
+}
+
+/* Règles de validation du mot de passe */
+.password-rules {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin-top: 10px;
+    margin-bottom: 4px;
+}
+.password-rules .rule {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #b91c1c;
+    transition: color 0.2s;
+}
+.password-rules .rule.valid {
+    color: #16a34a;
+}
+.password-rules .rule .rule-icon {
+    font-weight: 700;
+    font-size: 0.8rem;
+    width: 16px;
+    text-align: center;
+}
+
 /* Messages d'erreur de champs/formulaires */
 .field-error,
 .form-error {

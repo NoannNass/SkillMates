@@ -43,12 +43,27 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(userProfile.getEmail())) {
             throw new IllegalArgumentException("Un utilisateur avec cet email existe déjà");
         }
-        
+
         // Vérifier si le nom d'utilisateur existe déjà
         if (userRepository.existsByUsername(userProfile.getUsername())) {
             throw new IllegalArgumentException("Ce nom d'utilisateur est déjà pris");
         }
-        
+
+        // Valider la robustesse du mot de passe
+        String password = userProfile.getPassword();
+        if (password == null || password.length() < 8) {
+            throw new IllegalArgumentException("Le mot de passe doit contenir au moins 8 caractères");
+        }
+        if (!password.matches(".*[A-Z].*")) {
+            throw new IllegalArgumentException("Le mot de passe doit contenir au moins une lettre majuscule");
+        }
+        if (!password.matches(".*[a-z].*")) {
+            throw new IllegalArgumentException("Le mot de passe doit contenir au moins une lettre minuscule");
+        }
+        if (!password.matches(".*[0-9].*")) {
+            throw new IllegalArgumentException("Le mot de passe doit contenir au moins un chiffre");
+        }
+
         // Encoder le mot de passe
         userProfile.setPassword(passwordEncoder.encode(userProfile.getPassword()));
         
